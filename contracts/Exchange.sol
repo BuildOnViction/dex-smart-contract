@@ -1,9 +1,9 @@
 pragma solidity ^0.4.21;
 // version 0.4.21 support emit and contructor
 
-import './utils/SafeMath.sol';
-import './utils/Owned.sol';
-import './interfaces/ERC20.sol';
+import "./utils/SafeMath.sol";
+import "./utils/Owned.sol";
+import "./interfaces/ERC20.sol";
 
 contract Exchange is Owned {
     using SafeMath for uint256;
@@ -14,7 +14,7 @@ contract Exchange is Owned {
         TAKER_SIGNATURE_INVALID,                // Taker signature is invalid
         ORDER_EXPIRED,                          // Order has already expired
         TRADE_ALREADY_COMPLETED_OR_CANCELLED,   // Trade has already been completed or it has been cancelled by taker
-        TRADE_AMOUNT_TOO_BIG,                   // Trade buyToken amount bigger than the remianing amountBuy
+        TRADE_AMOUNT_TOO_BIG,                   // Trade buyToken amount bigger than the remianing buyAmount
         ROUNDING_ERROR_TOO_LARGE                // Rounding error too large
     }
 
@@ -23,7 +23,7 @@ contract Exchange is Owned {
     address public wethToken;
     address public feeAccount;
     mapping(address => bool) public operators;
-    mapping(bytes32 => uint) public filled;       // Mappings of orderHash => amount of amountBuy filled.
+    mapping(bytes32 => uint) public filled;       // Mappings of orderHash => amount of buyAmount filled.
     mapping(bytes32 => bool) public traded;       // Mappings of tradeHash => bool value representing whether the trade is completed(true) or incomplete(false).
 
     event LogWethTokenUpdate(address oldWethToken, address newWethToken);
@@ -33,10 +33,10 @@ contract Exchange is Owned {
     event LogTrade(
         address indexed maker,
         address indexed taker,
-        address tokenSell,
-        address tokenBuy,
-        uint256 filledAmountSell,
-        uint256 filledAmountBuy,
+        address sellToken,
+        address buyToken,
+        uint256 filledSellAmount,
+        uint256 filledBuyAmount,
         uint paidFeeMake,
         uint paidFeeTake,
         bytes32 orderHash,
@@ -52,10 +52,10 @@ contract Exchange is Owned {
 
     event LogCancelOrder(
         bytes32 orderHash,
-        address tokenBuy,
-        uint256 amountBuy,
-        address tokenSell,
-        uint256 amountSell,
+        address buyToken,
+        uint256 buyAmount,
+        address sellToken,
+        uint256 sellAmount,
         uint256 expires,
         uint256 nonce,
         address indexed maker,
@@ -70,14 +70,14 @@ contract Exchange is Owned {
     );
 
     struct Order {
-        uint256 amountBuy;  // The amount of buy tokens asked in the order
-        uint256 amountSell; // The amount of sell tokens asked in the order
+        uint256 buyAmount;  // The amount of buy tokens asked in the order
+        uint256 sellAmount; // The amount of sell tokens asked in the order
         uint256 expires;    // The block length after which the order will be considered expired
         uint256 nonce;      // A maker wise unique incrementing integer value assigned to the order
         uint256 feeMake;    // It is the maker fee
         uint256 feeTake;    // It is the taker fee
-        address tokenBuy;   // Ethereum address of the buy token
-        address tokenSell;  // Ethereum address of the sell token
+        address buyToken;   // Ethereum address of the buy token
+        address sellToken;  // Ethereum address of the sell token
         address maker;      // Ethereum address of the order maker
     }
 
@@ -135,8 +135,8 @@ contract Exchange is Owned {
 
 
     /// @dev Executes a trade between maker & taker.
-    /// @param orderValues Array of order's amountBuy, amountSell, expires, nonce, feeMake & feeTake values.
-    /// @param orderAddresses Array of order's tokenBuy, tokenSell, maker & taker addresses.
+    /// @param orderValues Array of order's buyAmount, sellAmount, expires, nonce, feeMake & feeTake values.
+    /// @param orderAddresses Array of order's buyToken, sellToken, maker & taker addresses.
     /// @param v Array of maker's & taker's ECDSA signature parameter v for order & trade.
     ///         v[0] is v parameter of the maker's signature
     ///         v[1] is v parameter of the taker's signature
@@ -154,14 +154,14 @@ contract Exchange is Owned {
     ) public onlyOperator returns (bool)
     {
         Order memory order = Order({
-            amountBuy : orderValues[0],
-            amountSell : orderValues[1],
+            buyAmount : orderValues[0],
+            sellAmount : orderValues[1],
             expires : orderValues[2],
             nonce : orderValues[3],
             feeMake : orderValues[4],
             feeTake : orderValues[5],
-            tokenBuy : orderAddresses[0],
-            tokenSell : orderAddresses[1],
+            buyToken : orderAddresses[0],
+            sellToken : orderAddresses[1],
             maker : orderAddresses[2]
             });
 
@@ -196,52 +196,52 @@ contract Exchange is Owned {
             return false;
         }
 
-        if (filled[orderHash].add(trade.amount) > order.amountBuy) {
+        if (filled[orderHash].add(trade.amount) > order.buyAmount) {
             emit LogError(uint8(Errors.TRADE_AMOUNT_TOO_BIG), orderHash, tradeHash);
             return false;
         }
 
-        if (isRoundingError(trade.amount, order.amountBuy, order.amountSell)) {
+        if (isRoundingError(trade.amount, order.buyAmount, order.sellAmount)) {
             emit LogError(uint8(Errors.ROUNDING_ERROR_TOO_LARGE), orderHash, tradeHash);
             return false;
         }
 
         traded[tradeHash] = true;
-        uint filledAmountSell = getPartialAmount(trade.amount, order.amountBuy, order.amountSell);
+        uint filledSellAmount = getPartialAmount(trade.amount, order.buyAmount, order.sellAmount);
 
         filled[orderHash] = filled[orderHash].add(trade.amount);
 
-        require(ERC20(order.tokenSell).transferFrom(order.maker, trade.taker, filledAmountSell));
-        require(ERC20(order.tokenBuy).transferFrom(trade.taker, order.maker, trade.amount));
+        require(ERC20(order.sellToken).transferFrom(order.maker, trade.taker, filledSellAmount));
+        require(ERC20(order.buyToken).transferFrom(trade.taker, order.maker, trade.amount));
 
         if (order.feeMake > 0) {
-            uint paidFeeMake = getPartialAmount(trade.amount, order.amountBuy, order.feeMake);
+            uint paidFeeMake = getPartialAmount(trade.amount, order.buyAmount, order.feeMake);
             require(ERC20(wethToken).transferFrom(order.maker, feeAccount, paidFeeMake));
         }
 
         if (order.feeTake > 0) {
-            uint paidFeeTake = getPartialAmount(trade.amount, order.amountBuy, order.feeTake);
+            uint paidFeeTake = getPartialAmount(trade.amount, order.buyAmount, order.feeTake);
             require(ERC20(wethToken).transferFrom(trade.taker, feeAccount, paidFeeTake));
         }
 
         emit LogTrade(
             order.maker,
             trade.taker,
-            order.tokenSell,
-            order.tokenBuy,
-            filledAmountSell,
+            order.sellToken,
+            order.buyToken,
+            filledSellAmount,
             trade.amount,
             paidFeeMake,
             paidFeeTake,
             orderHash,
             tradeHash,
-            keccak256(abi.encodePacked(order.tokenSell, order.tokenBuy)));
+            keccak256(abi.encodePacked(order.sellToken, order.buyToken)));
         return true;
     }
 
     /// @dev Cancels the input order.
-    /// @param orderValues Array of order's amountBuy, amountSell, expires, nonce, feeMake & feeTake values.
-    /// @param orderAddresses Array of order's tokenBuy, tokenSell & maker addresses.
+    /// @param orderValues Array of order's buyAmount, sellAmount, expires, nonce, feeMake & feeTake values.
+    /// @param orderAddresses Array of order's buyToken, sellToken & maker addresses.
     /// @param v ECDSA signature parameter v.
     /// @param r ECDSA signature parameters r.
     /// @param s ECDSA signature parameters s.
@@ -255,14 +255,14 @@ contract Exchange is Owned {
     ) public returns (bool)
     {
         Order memory order = Order({
-            amountBuy : orderValues[0],
-            amountSell : orderValues[1],
+            buyAmount : orderValues[0],
+            sellAmount : orderValues[1],
             expires : orderValues[2],
             nonce : orderValues[3],
             feeMake : orderValues[4],
             feeTake : orderValues[5],
-            tokenBuy : orderAddresses[0],
-            tokenSell : orderAddresses[1],
+            buyToken : orderAddresses[0],
+            sellToken : orderAddresses[1],
             maker : orderAddresses[2]
             });
 
@@ -272,18 +272,18 @@ contract Exchange is Owned {
             emit LogError(uint8(Errors.SIGNATURE_INVALID), orderHash, "");
             return false;
         }
-        filled[orderHash] = order.amountBuy;
+        filled[orderHash] = order.buyAmount;
 
         emit LogCancelOrder(
             orderHash,
-            order.tokenBuy,
-            order.amountBuy,
-            order.tokenSell,
-            order.amountSell,
+            order.buyToken,
+            order.buyAmount,
+            order.sellToken,
+            order.sellAmount,
             order.expires,
             order.nonce,
             order.maker,
-            keccak256(abi.encodePacked(order.tokenSell, order.tokenBuy)));
+            keccak256(abi.encodePacked(order.sellToken, order.buyToken)));
         return true;
     }
 
@@ -404,10 +404,10 @@ contract Exchange is Owned {
         return keccak256(abi.encodePacked(
                 address(this),
                 order.maker,
-                order.tokenSell,
-                order.tokenBuy,
-                order.amountSell,
-                order.amountBuy,
+                order.sellToken,
+                order.buyToken,
+                order.sellAmount,
+                order.buyAmount,
                 order.feeMake,
                 order.feeTake,
                 order.expires,

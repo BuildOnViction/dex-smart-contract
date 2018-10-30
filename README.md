@@ -12,16 +12,16 @@ To execute a trade, `executeTrade` needs to be called with the following argumen
 
 | Argument   | Type    | Description                                               |
 | ---------- | ------- | --------------------------------------------------------- |
-| amountBuy  | uint256 | Amount of _tokenBuy_ tokens the maker wants to buy        |
-| amountSell | uint256 | Amount of _tokenSell_ tokens the maker wants to sell      |
+| buyAmount  | uint256 | Amount of _buyToken_ tokens the maker wants to buy        |
+| sellAmount | uint256 | Amount of _sellToken_ tokens the maker wants to sell      |
 | expires    | uint256 | Blocknumber at which the order will no longer be valuable |
 | nonce      | uint256 | Random number to ensure uniqueness of the order           |
 | feeMake    | uint256 | Percentage of fee taken from maker token value            |
 | feeTake    | uint256 | Percentage of fee taken from taker token value            |
-| amount     | uint256 | Amount of _tokenBuy_ the taker wants to **sell**          |
+| amount     | uint256 | Amount of _buyToken_ the taker wants to **sell**          |
 | tradeNonce | uint256 | Random number to ensure uniqueness of the trade           |
-| tokenBuy   | address | Address of _tokenBuy_ (token the maker wants to buy)      |
-| tokenSell  | address | Address of _tokenSell_ (token the maker wants to sell)    |
+| buyToken   | address | Address of _buyToken_ (token the maker wants to buy)      |
+| sellToken  | address | Address of _sellToken_ (token the maker wants to sell)    |
 | maker      | address | Maker Address                                             |
 | taker      | address | Taker Address                                             |
 | vMaker     | uint8   | Maker Signature v Parameter                               |
@@ -38,14 +38,14 @@ To do a _hard cancel_, `cancelOrder` needs to be called with the following argum
 
 | Argument   | Type    | Description                                               |
 | ---------- | ------- | --------------------------------------------------------- |
-| amountBuy  | uint256 | Amount of _tokenBuy_ tokens the maker wants to buy        |
-| amountSell | uint256 | Amount of _tokenSell_ tokens the maker wants to sell      |
+| buyAmount  | uint256 | Amount of _buyToken_ tokens the maker wants to buy        |
+| sellAmount | uint256 | Amount of _sellToken_ tokens the maker wants to sell      |
 | expires    | uint256 | Blocknumber at which the order will no longer be valuable |
 | nonce      | uint256 | Random number to ensure uniqueness of the order           |
 | feeMake    | uint256 | Percentage of fee taken from maker token value            |
 | feeTake    | uint256 | Percentage of fee taken from taker token value            |
-| tokenBuy   | address | Address of _tokenBuy_ (token the maker wants to buy)      |
-| tokenSell  | address | Address of _tokenSell_ (token the maker wants to sell)    |
+| buyToken   | address | Address of _buyToken_ (token the maker wants to buy)      |
+| sellToken  | address | Address of _sellToken_ (token the maker wants to sell)    |
 | maker      | address | Maker Address                                             |
 | v          | uint8   | Maker Signature v Parameter                               |
 | r          | bytes32 | Maker Signature r Parameter                               |

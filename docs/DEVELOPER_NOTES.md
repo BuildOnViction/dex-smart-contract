@@ -12,19 +12,19 @@ associated gas fees.
 
 It provides the facility to exchange ERC20 tokens. Quick glance at contract functions:
 
-| Function            | Description                      |
-| ------------------- | -------------------------------- |
-| setWethToken        | Allows owner to set a given address as WETH token. WETH token are accepted as fees for executed trades.|
-| setFeeAccount       | Allows owner to set a given address as fees account. All the fees received in executed trades will be deposited in this address.|
-| setOperator         | Allows owner to set/unset a given address as exchange operator. Operator's have the ablity to access 'executeTrade' functions & settle orders.|
-| executeTrade        | Allows owner/operator to settle matched order between a maker & taker on chain.|
-| cancelOrder         | Allows maker to cancel an input order.|
-| cancelTrade         | Allows taker to cancel an input trade.|
-| isValidSignature    | Verifies whether a given input signature is valid or not.|
-| isRoundingError     | Checks if rounding error is greater than 0.1% for given numerator, denominator & target. It is used to verify that the rounding error in the calulated makerTokenAmount for given tradeAmount, does not exceed 0.1%|
-| getPartialAmount    | Calculates partial value for given numerator, denominator & target. It is used to calculate partial makerTokenAmount for a trade as well as partial maker & taker fees for a trade. |
-| getOrderHash        | Calculates Keccak-256 hash of order.|
-| getTradeHash        | Calculates Keccak-256 hash of trade.|
+| Function         | Description                                                                                                                                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| setWethToken     | Allows owner to set a given address as WETH token. WETH token are accepted as fees for executed trades.                                                                                                             |
+| setFeeAccount    | Allows owner to set a given address as fees account. All the fees received in executed trades will be deposited in this address.                                                                                    |
+| setOperator      | Allows owner to set/unset a given address as exchange operator. Operator's have the ablity to access 'executeTrade' functions & settle orders.                                                                      |
+| executeTrade     | Allows owner/operator to settle matched order between a maker & taker on chain.                                                                                                                                     |
+| cancelOrder      | Allows maker to cancel an input order.                                                                                                                                                                              |
+| cancelTrade      | Allows taker to cancel an input trade.                                                                                                                                                                              |
+| isValidSignature | Verifies whether a given input signature is valid or not.                                                                                                                                                           |
+| isRoundingError  | Checks if rounding error is greater than 0.1% for given numerator, denominator & target. It is used to verify that the rounding error in the calulated makerTokenAmount for given tradeAmount, does not exceed 0.1% |
+| getPartialAmount | Calculates partial value for given numerator, denominator & target. It is used to calculate partial makerTokenAmount for a trade as well as partial maker & taker fees for a trade.                                 |
+| getOrderHash     | Calculates Keccak-256 hash of order.                                                                                                                                                                                |
+| getTradeHash     | Calculates Keccak-256 hash of trade.                                                                                                                                                                                |
 
 ## Why 'Allowance' mechanism is used instead of 'Deposit/Withdraw' mechanism in the exchange?
 
@@ -114,8 +114,8 @@ Formula to calculate % error is:
 
 Here, 
 
-Actual value = floor((tradeAmount * tokenSellAmount)/tokenBuyAmount)  
-Accepted value = (tradeAmount * tokenSellAmount)/tokenBuyAmount 
+Actual value = floor((tradeAmount * sellTokenAmount)/buyTokenAmount)  
+Accepted value = (tradeAmount * sellTokenAmount)/buyTokenAmount 
 
 But before we substitute the equatons of 'Actual value' & 'Accepted value', We have : 
 ```
@@ -124,27 +124,27 @@ But before we substitute the equatons of 'Actual value' & 'Accepted value', We h
 
 So the % Error formula above can be simplied to :
 ```
-% Error = [((tradeAmount * tokenSellAmount) % tokenBuyAmount) / (tradeAmount * tokenSellAmount)] * 100 
+% Error = [((tradeAmount * sellTokenAmount) % buyTokenAmount) / (tradeAmount * sellTokenAmount)] * 100 
 ```
-where (tradeAmount * tokenSellAmount) % tokenBuyAmount = R = the remainder of calculation. This simplifies the equation to :
+where (tradeAmount * sellTokenAmount) % buyTokenAmount = R = the remainder of calculation. This simplifies the equation to :
 ```
-% Error = [R / (tradeAmount * tokenSellAmount)] * 100 
+% Error = [R / (tradeAmount * sellTokenAmount)] * 100 
 ```
 
 
 Now the 'isRoundingError' functions checks wether the percentage rounding error exceeds 0.1%. So,
 ```
-R / (tradeAmount * tokenSellAmount) * 100 > 0.1
-R / (tradeAmount * tokenSellAmount) > 0.001
+R / (tradeAmount * sellTokenAmount) * 100 > 0.1
+R / (tradeAmount * sellTokenAmount) > 0.001
 ```
 
 Division in Solidity can only return an integer, so multiplying each side by 1000 yields:
 ```
-1000 * R / (tradeAmount * tokenSellAmount) > 1
+1000 * R / (tradeAmount * sellTokenAmount) > 1
 ```
 Integer division is still unable to detect 3 decimal places (for 0.001) so multiply by 1000 again to get 3 decimal places:
 ```
-1,000,000 * R /(tradeAmount * tokenSellAmount) > 1000
+1,000,000 * R /(tradeAmount * sellTokenAmount) > 1000
 ```
 If the calculation is greater than 1000, this means there's a rounding error greater than 0.001 and the function returns true.
 So the final implementaion becomes: 
