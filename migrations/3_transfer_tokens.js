@@ -1,6 +1,6 @@
 const Exchange = artifacts.require('./Exchange.sol');
 const WETH = artifacts.require('./contracts/utils/WETH9.sol');
-const BNB = artifacts.require('./contracts/tokens/BNB.sol');
+const TOMO = artifacts.require('./contracts/tokens/TOMO.sol');
 const OMG = artifacts.require('./contracts/tokens/OMG.sol');
 const ZRX = artifacts.require('./contracts/tokens/ZRX.sol');
 const AE = artifacts.require('./contracts/tokens/AE.sol');
@@ -30,7 +30,7 @@ web3.personal.unlockAccount(admin, '123456789', 10000);
 let tokens = [];
 
 module.exports = function(deployer) {
-  BNB.deployed().then(async _token1 => {
+  TOMO.deployed().then(async _token1 => {
     tokens[0] = _token1;
     tokens[1] = await OMG.deployed();
     tokens[2] = await ZRX.deployed();

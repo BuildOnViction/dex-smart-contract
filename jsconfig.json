@@ -1,0 +1,7 @@
+{
+  "solidity.linter": "solium",
+  "solidity.soliumRules": {
+    "quotes": ["error", "double"],
+    "indentation": ["error", 2]
+  }
+}

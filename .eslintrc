@@ -1,25 +1,24 @@
 {
   "parser": "babel-eslint",
-    "extends": [
-      "standard",
-      "plugin:react/recommended"
-    ],
-    "plugins": [
-      "babel",
-      "react"
-    ],
-    "rules": {
-      "key-spacing"          : 0,
-      "jsx-quotes"           : [2, "prefer-single"],
-      "max-len"              : [2, 120, 2],
-      "object-curly-spacing" : [2, "always"],
-      "no-extend-native": "off",
-      "no-unused-vars": 1
-    },
-    "env": {
-      "browser": true,
-      "es6": true,
-      "mocha": true,
-      "node": true
-    }
+  "extends": ["standard", "plugin:react/recommended"],
+  "plugins": ["babel", "react"],
+  "rules": {
+    "key-spacing": 0,
+    "jsx-quotes": [2, "prefer-single"],
+    "max-len": [2, 120, 2],
+    "object-curly-spacing": [2, "always"],
+    "no-extend-native": "off",
+    "no-unused-vars": 1
+  },
+  "env": {
+    "browser": true,
+    "es6": true,
+    "mocha": true,
+    "node": true
+  },
+  "solidity.linter": "solium",
+  "solidity.soliumRules": {
+    "quotes": ["error", "double"],
+    "indentation": ["error", 2]
+  }
 }

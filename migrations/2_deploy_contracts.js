@@ -1,6 +1,6 @@
 const Exchange = artifacts.require('./Exchange.sol');
 const WETH = artifacts.require('./contracts/utils/WETH9.sol');
-const BNB = artifacts.require('./contracts/tokens/BNB.sol');
+const TOMO = artifacts.require('./contracts/tokens/TOMO.sol');
 const OMG = artifacts.require('./contracts/tokens/OMG.sol');
 const ZRX = artifacts.require('./contracts/tokens/ZRX.sol');
 const AE = artifacts.require('./contracts/tokens/AE.sol');
@@ -37,7 +37,7 @@ module.exports = function(deployer) {
   deployer.deploy(WETH).then(async _weth => {
     weth = _weth;
     exchange = await deployer.deploy(Exchange, weth.address, admin);
-    token1 = await deployer.deploy(BNB, admin, 10000000000e18);
+    token1 = await deployer.deploy(TOMO, admin, 10000000000e18);
     token2 = await deployer.deploy(OMG, admin, 10000000000e18);
     token3 = await deployer.deploy(ZRX, admin, 10000000000e18);
     token4 = await deployer.deploy(AE, admin, 10000000000e18);

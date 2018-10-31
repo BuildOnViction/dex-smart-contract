@@ -1,7 +1,11 @@
 {
-  "name": "truffle-init-webpack",
+  "name": "dex-contracts",
   "version": "0.0.2",
   "description": "Frontend example using truffle v3",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tomochain/dex-smart-contract.git"
+  },
   "scripts": {
     "lint": "eslint ./",
     "build": "webpack",

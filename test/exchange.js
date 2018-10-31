@@ -21,7 +21,7 @@ chai
 
 const WETH = artifacts.require('./utils/WETH9.sol');
 const Exchange = artifacts.require('./Exchange.sol');
-const BNB = artifacts.require('./contracts/tokens/BNB.sol');
+const TOMO = artifacts.require('./contracts/tokens/TOMO.sol');
 const OMG = artifacts.require('./contracts/tokens/OMG.sol');
 
 contract('Exchange', accounts => {
@@ -171,7 +171,7 @@ contract('Exchange', accounts => {
     beforeEach(async () => {
       weth = await WETH.new();
       exchange = await Exchange.new(weth.address, feeAccount);
-      token1 = await BNB.new(trader1, 1000);
+      token1 = await TOMO.new(trader1, 1000);
       token2 = await OMG.new(trader2, 1000);
 
       await exchange.setOperator(operator, true, { from: owner });
@@ -377,7 +377,7 @@ contract('Exchange', accounts => {
     beforeEach(async () => {
       weth = await WETH.new();
       exchange = await Exchange.new(weth.address, feeAccount);
-      token1 = await BNB.new(trader1, 1000);
+      token1 = await TOMO.new(trader1, 1000);
       token2 = await OMG.new(trader2, 1000);
 
       await exchange.setOperator(operator, true, { from: owner });
@@ -623,7 +623,7 @@ contract('Exchange', accounts => {
       beforeEach(async () => {
         weth = await WETH.new();
         exchange = await Exchange.new(weth.address, feeAccount);
-        token1 = await BNB.new(trader1, 1000);
+        token1 = await TOMO.new(trader1, 1000);
         token2 = await OMG.new(trader2, 1000);
 
         await exchange.setOperator(operator, true, { from: owner });
@@ -1666,7 +1666,7 @@ contract('Exchange', accounts => {
       beforeEach(async () => {
         weth = await WETH.new();
         exchange = await Exchange.new(weth.address, feeAccount);
-        token1 = await BNB.new(trader1, 1000);
+        token1 = await TOMO.new(trader1, 1000);
         token2 = await OMG.new(trader2, 1000);
       });
 

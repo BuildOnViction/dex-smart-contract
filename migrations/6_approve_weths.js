@@ -1,6 +1,6 @@
 const Exchange = artifacts.require('./Exchange.sol');
 const WETH = artifacts.require('./contracts/utils/WETH9.sol');
-const BNB = artifacts.require('./contracts/tokens/BNB.sol');
+const TOMO = artifacts.require('./contracts/tokens/TOMO.sol');
 const OMG = artifacts.require('./contracts/tokens/OMG.sol');
 const ZRX = artifacts.require('./contracts/tokens/ZRX.sol');
 const AE = artifacts.require('./contracts/tokens/AE.sol');
