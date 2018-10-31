@@ -2,6 +2,11 @@
 # DEX smart contract
 The smart contract samples of some tokens for the Decentralized Exchange
 
+# Init smart contracts
+If you have already put smart contracts in genesis block, just change the code from `await BTM.deployed()` to `await BTM.at("address")` then run
+`truffle migrate -f 3 --to 3 --network development`  
+Otherwise just run `truffle deploy --network development`  
+
 ## Architecture
 
 The smart contract samples used to deploy in creation block. The tokens contracts for selling and buying, and the Exchange contract used to allows two users to interact with. There is no matching engine logic inside the exchange contract, it is supposed to have trade logic only.

@@ -19,7 +19,7 @@ chai
   .use(bnChai(require('bn.js')))
   .should();
 
-const WETH = artifacts.require('./utils/WETH9.sol');
+const WETH = artifacts.require('./utils/WETH.sol');
 const Exchange = artifacts.require('./Exchange.sol');
 const TOMO = artifacts.require('./contracts/tokens/TOMO.sol');
 const OMG = artifacts.require('./contracts/tokens/OMG.sol');

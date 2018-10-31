@@ -1,5 +1,5 @@
 const Exchange = artifacts.require('./Exchange.sol');
-const WETH = artifacts.require('./contracts/utils/WETH9.sol');
+const WETH = artifacts.require('./contracts/utils/WETH.sol');
 const TOMO = artifacts.require('./contracts/tokens/TOMO.sol');
 const OMG = artifacts.require('./contracts/tokens/OMG.sol');
 const ZRX = artifacts.require('./contracts/tokens/ZRX.sol');
@@ -30,6 +30,11 @@ web3.personal.unlockAccount(admin, '123456789', 10000);
 let tokens = [];
 
 module.exports = function(deployer) {
+  // example of transfer AE to admin
+  // AE.at('0x5ca9a71b1d01849c0a95490cc00559717fcf0d1d').then(async token => {
+  //   await token.transfer(admin, 1000000e18, { from: admin });
+  // });
+
   TOMO.deployed().then(async _token1 => {
     tokens[0] = _token1;
     tokens[1] = await OMG.deployed();
