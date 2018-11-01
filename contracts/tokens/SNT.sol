@@ -25,6 +25,7 @@ contract SNT is Owned {
   uint256 totalSupply_;
   bool public mintingFinished = false;
   string public constant symbol = "SNT";
+  uint8  public decimals = 18;
 
   function SNT(address _to, uint256 _amount) {
     totalSupply_ = totalSupply_.add(_amount);

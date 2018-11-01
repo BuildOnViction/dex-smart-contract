@@ -25,6 +25,7 @@ contract DGX is Owned {
   uint256 totalSupply_;
   bool public mintingFinished = false;
   string public constant symbol = "DGX";
+  uint8  public decimals = 18;
 
   function DGX(address _to, uint256 _amount) {
     totalSupply_ = totalSupply_.add(_amount);

@@ -25,6 +25,7 @@ contract MKR is Owned {
   uint256 totalSupply_;
   bool public mintingFinished = false;
   string public constant symbol = "MKR";
+  uint8  public decimals = 18;
 
   function MKR(address _to, uint256 _amount) {
     totalSupply_ = totalSupply_.add(_amount);

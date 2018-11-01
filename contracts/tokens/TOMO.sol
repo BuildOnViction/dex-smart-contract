@@ -25,6 +25,7 @@ contract TOMO is Owned {
   uint256 totalSupply_;
   bool public mintingFinished = false;
   string public constant symbol = "TOMO";
+  uint8  public decimals = 18;
 
   function TOMO(address _to, uint256 _amount) {
     totalSupply_ = totalSupply_.add(_amount);

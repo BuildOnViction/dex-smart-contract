@@ -131,6 +131,7 @@ contract Exchange is Owned {
 
     /*
     * Core exchange functions
+    * We will soon move all event logs to feed but remain only this method
     */
 
 
