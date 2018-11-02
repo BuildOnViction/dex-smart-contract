@@ -21,6 +21,14 @@ module.exports = {
       gasPrice: config.constants.DEFAULT_GAS_PRICE,
       from: '0x28074f8D0fD78629CD59290Cac185611a8d60109' // testprc main account here
     },
+    development_node2: {
+      host: 'localhost',
+      port: 8546,
+      network_id: '8888',
+      gas: config.constants.MAX_GAS,
+      gasPrice: config.constants.DEFAULT_GAS_PRICE,
+      from: '0x6e6BB166F420DDd682cAEbf55dAfBaFda74f2c9c' // testprc main account here
+    },
     development_geth: {
       host: 'localhost',
       port: 8545,
