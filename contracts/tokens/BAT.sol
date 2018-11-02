@@ -1,7 +1,7 @@
 pragma solidity ^0.4.18;
 
-import '../utils/SafeMath.sol';
-import '../utils/Owned.sol';
+import "../utils/SafeMath.sol";
+import "../utils/Owned.sol";
 
 /**
  * @title Standard ERC20 token
@@ -27,7 +27,7 @@ contract BAT is Owned {
   string public constant symbol = "BAT";
   uint8  public decimals = 18;
 
-  function BAT(address _to, uint256 _amount) {
+  constructor(address _to, uint256 _amount) public {
     totalSupply_ = totalSupply_.add(_amount);
     balances[_to] = balances[_to].add(_amount);
   }
@@ -50,7 +50,7 @@ contract BAT is Owned {
 
     balances[msg.sender] = balances[msg.sender].sub(_value);
     balances[_to] = balances[_to].add(_value);
-    Transfer(msg.sender, _to, _value);
+    emit Transfer(msg.sender, _to, _value);
     return true;
   }
 
@@ -78,7 +78,7 @@ contract BAT is Owned {
     balances[_from] = balances[_from].sub(_value);
     balances[_to] = balances[_to].add(_value);
     allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
-    Transfer(_from, _to, _value);
+    emit Transfer(_from, _to, _value);
     return true;
   }
 
@@ -94,7 +94,7 @@ contract BAT is Owned {
    */
   function approve(address _spender, uint256 _value) public returns (bool) {
     allowed[msg.sender][_spender] = _value;
-    Approval(msg.sender, _spender, _value);
+    emit Approval(msg.sender, _spender, _value);
     return true;
   }
 
@@ -120,7 +120,7 @@ contract BAT is Owned {
    */
   function increaseApproval(address _spender, uint _addedValue) public returns (bool) {
     allowed[msg.sender][_spender] = allowed[msg.sender][_spender].add(_addedValue);
-    Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
+    emit Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
     return true;
   }
 
@@ -141,7 +141,7 @@ contract BAT is Owned {
     } else {
       allowed[msg.sender][_spender] = oldValue.sub(_subtractedValue);
     }
-    Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
+    emit Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
     return true;
   }
 
@@ -162,8 +162,8 @@ contract BAT is Owned {
   function mint(address _to, uint256 _amount) onlyOwner canMint public returns (bool) {
     totalSupply_ = totalSupply_.add(_amount);
     balances[_to] = balances[_to].add(_amount);
-    Mint(_to, _amount);
-    Transfer(address(0), _to, _amount);
+    emit Mint(_to, _amount);
+    emit Transfer(address(0), _to, _amount);
     return true;
   }
 
@@ -173,7 +173,7 @@ contract BAT is Owned {
    */
   function finishMinting() onlyOwner canMint public returns (bool) {
     mintingFinished = true;
-    MintFinished();
+    emit MintFinished();
     return true;
   }
 
