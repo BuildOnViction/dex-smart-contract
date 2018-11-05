@@ -23,6 +23,7 @@ const FUN = artifacts.require('./contracts/tokens/FUN.sol');
 const KNC = artifacts.require('./contracts/tokens/KNC.sol');
 const LOOM = artifacts.require('./contracts/tokens/LOOM.sol');
 const PRFT = artifacts.require('./contracts/tokens/PRFT.sol');
+const DAI = artifacts.require('./contracts/tokens/DAI.sol');
 
 const accounts = web3.eth.accounts;
 const admin = accounts[0];
@@ -62,5 +63,6 @@ module.exports = function(deployer) {
     token21 = await deployer.deploy(KNC, admin, 10000000000e18);
     token22 = await deployer.deploy(LOOM, admin, 10000000000e18);
     token23 = await deployer.deploy(PRFT, admin, 10000000000e18);
+    token24 = await deployer.deploy(DAI, admin, 10000000000e18);
   });
 };
