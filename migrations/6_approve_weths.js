@@ -25,13 +25,16 @@ const LOOM = artifacts.require('./contracts/tokens/LOOM.sol');
 const PRFT = artifacts.require('./contracts/tokens/PRFT.sol');
 const DAI = artifacts.require('./contracts/tokens/DAI.sol');
 
-const accounts = web3.eth.accounts;
-const admin = accounts[0];
-web3.personal.unlockAccount(admin, '123456789', 10000);
-let weth;
-let exchange;
 
-module.exports = function(deployer) {
+
+module.exports = function (deployer, network, accounts) {
+
+  accounts = web3.eth.accounts;
+  const admin = '0x6e6BB166F420DDd682cAEbf55dAfBaFda74f2c9c' //accounts[0];
+  web3.personal.unlockAccount(admin, '123456789', 10000);
+  let weth;
+  let exchange;
+
   WETH.deployed().then(async _weth => {
     let approvals = [];
     weth = _weth;
@@ -39,7 +42,9 @@ module.exports = function(deployer) {
 
     for (let account of accounts) {
       approvals.push(
-        weth.approve(exchange.address, 500000e18, { from: account })
+        weth.approve(exchange.address, 500000e18, {
+          from: account
+        })
       );
     }
 
