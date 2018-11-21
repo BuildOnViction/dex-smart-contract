@@ -25,16 +25,15 @@ const LOOM = artifacts.require('./contracts/tokens/LOOM.sol');
 const PRFT = artifacts.require('./contracts/tokens/PRFT.sol');
 const DAI = artifacts.require('./contracts/tokens/DAI.sol');
 
-const accounts = web3.eth.accounts;
-const admin = accounts[0];
-web3.personal.unlockAccount(admin, '123456789', 10000);
-let tokens = [];
-
-module.exports = function(deployer) {
+module.exports = function(deployer, network, accounts) {
   // example of transfer AE to admin
   // AE.at('0x5ca9a71b1d01849c0a95490cc00559717fcf0d1d').then(async token => {
   //   await token.transfer(admin, 1000000e18, { from: admin });
   // });
+
+  const admin = network === 'development' ? accounts[0] : accounts[1];
+  web3.personal.unlockAccount(admin, '123456789', 10000);
+  let tokens = [];
 
   TOMO.deployed().then(async _token1 => {
     tokens[0] = _token1;

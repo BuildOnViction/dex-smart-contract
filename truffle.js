@@ -23,7 +23,7 @@ module.exports = {
     },
     development_node2: {
       host: 'localhost',
-      port: 8546,
+      port: 8545,
       network_id: '8888',
       gas: config.constants.MAX_GAS,
       gasPrice: config.constants.DEFAULT_GAS_PRICE,
