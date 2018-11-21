@@ -38,7 +38,9 @@ module.exports = function(deployer, network, accounts) {
 
     for (let account of accounts) {
       approvals.push(
-        weth.approve(exchange.address, 500000e18, { from: account })
+        weth.approve(exchange.address, 500000e18, {
+          from: account
+        })
       );
     }
 

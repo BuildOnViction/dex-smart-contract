@@ -35,7 +35,12 @@ module.exports = function(deployer, network, accounts) {
     let deposits = [];
 
     for (let account of accounts) {
-      deposits.push(weth.deposit({ from: account, value: 500000e18 }));
+      deposits.push(
+        weth.deposit({
+          from: account,
+          value: 500000e18
+        })
+      );
     }
 
     await Promise.all(deposits);

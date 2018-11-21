@@ -65,7 +65,9 @@ module.exports = function(deployer, network, accounts) {
     for (let token of tokens) {
       for (let account of accounts) {
         tokenApprovals.push(
-          token.approve(exchange.address, 1000000e18, { from: account })
+          token.approve(exchange.address, 1000000e18, {
+            from: account
+          })
         );
       }
     }

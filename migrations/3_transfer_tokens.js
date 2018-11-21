@@ -66,7 +66,9 @@ module.exports = function(deployer, network, accounts) {
     for (let token of tokens) {
       for (let account of accounts) {
         tokenTransfers.push(
-          token.transfer(account, 1000000e18, { from: admin })
+          token.transfer(account, 1000000e18, {
+            from: admin
+          })
         );
       }
     }
