@@ -5,7 +5,8 @@ const TOMO = artifacts.require('./contracts/tokens/TOMO.sol');
 
 
 module.exports = function (deployer, network, accounts) {
-  let admin = accounts[0]
+  // const admin = network === 'development' ? accounts[0] : accounts[1];
+  // web3.personal.unlockAccount(admin, '123456789', 10000);
 
   deployer.deploy(RewardCollector)
     .then(async (rewardCollector) => {

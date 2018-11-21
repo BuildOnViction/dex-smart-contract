@@ -7,10 +7,10 @@ let config = {
   },
   constants: {
     DEFAULT_GAS: 4.5 * 10 ** 6,
-    MAX_GAS: 4.5 * 10 ** 6,
+    MAX_GAS: 6.0 * 10 ** 6,
     DEFAULT_LOW_GAS_PRICE: 0.1 * 10 ** 9,
-    DEFAULT_GAS_PRICE: 2 * 10 ** 9,
-    DEFAULT_HIGH_GAS_PRICE: 5 * 10 ** 9,
+    DEFAULT_GAS_PRICE: 15 * 10 ** 9,
+    DEFAULT_HIGH_GAS_PRICE: 9 * 10 ** 9,
     TOKENS_ALLOCATED_TO_PROOF: 1181031 * (10 ** 18),
     DECIMALS_POINTS: 10 ** 18,
     TOKEN_UNITS: 10 ** 18,
@@ -21,23 +21,13 @@ let config = {
     TESTING_SUCCESS: 'QmVuyH2JtbTguZuC5HsefNBbu8SNSUdq6mrHHDhGeLob3V',
     TESTING_FAIL: 'QmUGo9mjcdc232p4YUgGf5mdZ5aAvVrVpp8AXiN4AuvBZd'
   },
-  addresses: {
-    development: {
-      WALLET_ADDRESS: '',
-      TOKEN_WALLET_ADDRESS: ''
-    },
-    rinkeby: {
-      WALLET_ADDRESS: '',
-      TOKEN_WALLET_ADDRESS: ''
-    },
-    ropsten: {
-      WALLET_ADDRESS: '',
-      TOKEN_WALLET_ADDRESS: ''
-    },
-    ethereum: {
-      WALLET_ADDRESS: '',
-      TOKEN_WALLET_ADDRESS: ''
-    }
+  accounts: {
+    development: [
+      '0x6e6bb166f420ddd682caebf55dafbafda74f2c9c'
+    ],
+    rinkeby: [],
+    ropsten: [],
+    ethereum: []
   }
 }
 

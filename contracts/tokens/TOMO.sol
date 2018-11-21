@@ -1,180 +1,321 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.15;
 
 import "../utils/SafeMath.sol";
-import "../utils/Owned.sol";
+import "../utils/Controlled.sol";
+import "../utils/ApproveAndCallReceiver.sol";
+import "../interfaces/TOMO.sol";
 
-/**
- * @title Standard ERC20 token
- *
- * @dev Implementation of the basic standard token.
- * @dev https://github.com/ethereum/EIPs/issues/20
- * @dev Based on code by FirstBlood: https://github.com/Firstbloodio/token/blob/master/smart_contract/FirstBloodToken.sol
- */
-contract TOMO is Owned {
+
+contract TOMO is Controlled
+{
 
   using SafeMath for uint256;
+  TOMOInterface public parentToken;
 
-  event Transfer(address indexed from, address indexed to, uint256 value);
-  event Approval(address indexed owner, address indexed spender, uint256 value);
+  bool public mintingFinished = false;
+  string public name;
+  string public symbol;
+  string public version;
+  uint8 public decimals;
+
+  uint256 public parentSnapShotBlock;
+  uint256 public creationBlock;
+
+
+  struct Checkpoint
+  {
+    uint128 fromBlock;
+    uint128 value;
+  }
+
+  Checkpoint[] totalSupplyHistory;
+  mapping(address => Checkpoint[]) balances;
+  mapping (address => mapping (address => uint)) allowed;
+
+
+
+  uint256 public constant TOTAL_PRESALE_TOKENS = 112386712924725508802400;
+
   event Mint(address indexed to, uint256 amount);
   event MintFinished();
+  event ClaimedTokens(address indexed _token, address indexed _owner, uint _amount);
+  event NewCloneToken(address indexed cloneToken);
+  event Approval(address indexed _owner, address indexed _spender, uint256 _amount);
+  event Transfer(address indexed from, address indexed to, uint256 value);
 
-  mapping (address => mapping (address => uint256)) internal allowed;
-  mapping(address => uint256) balances;
+  constructor() public
+  {
+      parentToken = TOMOInterface(0x0);
+      parentSnapShotBlock = 0;
+      name = "Tomo Token";
+      symbol = "TOMO";
+      decimals = 18;
+      creationBlock = block.number;
+      version = "0.1";
+  }
 
-  uint256 totalSupply_;
-  bool public mintingFinished = false;
-  string public constant symbol = "TOMO";
-  uint8  public decimals = 18;
+  function() public payable
+  {
+    revert();
+  }
 
-  constructor(address _to, uint256 _amount) public {
-    totalSupply_ = totalSupply_.add(_amount);
-    balances[_to] = balances[_to].add(_amount);
+
+  /**
+  * Returns the total Tomo token supply at the current block
+  * @return total supply {uint256}
+  */
+  function totalSupply() public constant returns (uint256)
+  {
+    return totalSupplyAt(block.number);
   }
 
   /**
-  * @dev total number of tokens in existence
+  * Returns the total Tomo token supply at the given block number
+  * @param _blockNumber {uint256}
+  * @return total supply {uint256}
   */
-  function totalSupply() public view returns (uint256) {
-    return totalSupply_;
+  function totalSupplyAt(uint256 _blockNumber) public constant returns(uint256)
+  {
+      // These next few lines are used when the totalSupply of the token is
+      //  requested before a check point was ever created for this token, it
+      //  requires that the `parentToken.totalSupplyAt` be queried at the
+      //  genesis block for this token as that contains totalSupply of this
+      //  token at this block number.
+      if ((totalSupplyHistory.length == 0) || (totalSupplyHistory[0].fromBlock > _blockNumber))
+      {
+          if (address(parentToken) != 0)
+          {
+              return parentToken.totalSupplyAt(min(_blockNumber, parentSnapShotBlock));
+          } else {
+              return 0;
+          }
+      // This will return the expected totalSupply during normal situations
+      } else {
+          return getValueAt(totalSupplyHistory, _blockNumber);
+      }
   }
 
   /**
-  * @dev transfer token for a specified address
-  * @param _to The address to transfer to.
-  * @param _value The amount to be transferred.
-  */
-  function transfer(address _to, uint256 _value) public returns (bool) {
-    require(_to != address(0));
-    require(_value <= balances[msg.sender]);
+  * Returns the token holder balance at the current block
+  * @param _owner {address}
+  * @return balance {uint256}
+   */
+  function balanceOf(address _owner) public constant returns (uint256 balance)
+  {
+      return balanceOfAt(_owner, block.number);
+  }
 
-    balances[msg.sender] = balances[msg.sender].sub(_value);
-    balances[_to] = balances[_to].add(_value);
-    emit Transfer(msg.sender, _to, _value);
+  /**
+  * Returns the token holder balance the the given block number
+  * @param _owner {address}
+  * @param _blockNumber {uint256}
+  * @return balance {uint256}
+  */
+  function balanceOfAt(address _owner, uint256 _blockNumber) public constant returns (uint256)
+  {
+    // These next few lines are used when the balance of the token is
+    //  requested before a check point was ever created for this token, it
+    //  requires that the `parentToken.balanceOfAt` be queried at the
+    //  genesis block for that token as this contains initial balance of
+    //  this token
+    if ((balances[_owner].length == 0) || (balances[_owner][0].fromBlock > _blockNumber))
+    {
+        if (address(parentToken) != 0)
+        {
+            return parentToken.balanceOfAt(_owner, min(_blockNumber, parentSnapShotBlock));
+        } else {
+            return 0; // Has no parent
+        }
+    // This will return the expected balance during normal situations
+    } else {
+        return getValueAt(balances[_owner], _blockNumber);
+    }
+  }
+
+  /**
+  * Standard ERC20 transfer tokens function
+  * @param _to {address}
+  * @param _amount {uint}
+  * @return success {bool}
+  */
+  function transfer(address _to, uint256 _amount) public returns (bool success)
+  {
+      return doTransfer(msg.sender, _to, _amount);
+  }
+
+  /**
+  * Standard ERC20 transferFrom function
+  * @param _from {address}
+  * @param _to {address}
+  * @param _amount {uint256}
+  * @return success {bool}
+  */
+  function transferFrom(address _from, address _to, uint256 _amount) public returns (bool success)
+  {
+      require(allowed[_from][msg.sender] >= _amount);
+      allowed[_from][msg.sender] -= _amount;
+      return doTransfer(_from, _to, _amount);
+  }
+
+  /**
+  * Standard ERC20 approve function
+  * @param _spender {address}
+  * @param _amount {uint256}
+  * @return success {bool}
+  */
+  function approve(address _spender, uint256 _amount) public returns (bool success)
+  {
+    //https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+      require((_amount == 0) || (allowed[msg.sender][_spender] == 0));
+      allowed[msg.sender][_spender] = _amount;
+      emit Approval(msg.sender, _spender, _amount);
+      return true;
+  }
+
+  /**
+  * Standard ERC20 approve function
+  * @param _spender {address}
+  * @param _amount {uint256}
+  * @return success {bool}
+  */
+  function approveAndCall(address _spender, uint256 _amount, bytes _extraData) public returns (bool success)
+  {
+    approve(_spender, _amount);
+
+    ApproveAndCallReceiver(_spender).receiveApproval(
+        msg.sender,
+        _amount,
+        this,
+        _extraData
+    );
+
     return true;
   }
 
   /**
-  * @dev Gets the balance of the specified address.
-  * @param _owner The address to query the the balance of.
-  * @return An uint256 representing the amount owned by the passed address.
-  */
-  function balanceOf(address _owner) public view returns (uint256) {
-    return balances[_owner];
-  }
-
-
-  /**
-   * @dev Transfer tokens from one address to another
-   * @param _from address The address which you want to send tokens from
-   * @param _to address The address which you want to transfer to
-   * @param _value uint256 the amount of tokens to be transferred
+  * Standard ERC20 allowance function
+  * @param _owner {address}
+  * @param _spender {address}
+  * @return remaining {uint256}
    */
-  function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
-    require(_to != address(0));
-    require(_value <= balances[_from]);
-    require(_value <= allowed[_from][msg.sender]);
-
-    balances[_from] = balances[_from].sub(_value);
-    balances[_to] = balances[_to].add(_value);
-    allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
-    emit Transfer(_from, _to, _value);
-    return true;
-  }
-
-  /**
-   * @dev Approve the passed address to spend the specified amount of tokens on behalf of msg.sender.
-   *
-   * Beware that changing an allowance with this method brings the risk that someone may use both the old
-   * and the new allowance by unfortunate transaction ordering. One possible solution to mitigate this
-   * race condition is to first reduce the spender's allowance to 0 and set the desired value afterwards:
-   * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
-   * @param _spender The address which will spend the funds.
-   * @param _value The amount of tokens to be spent.
-   */
-  function approve(address _spender, uint256 _value) public returns (bool) {
-    allowed[msg.sender][_spender] = _value;
-    emit Approval(msg.sender, _spender, _value);
-    return true;
-  }
-
-  /**
-   * @dev Function to check the amount of tokens that an owner allowed to a spender.
-   * @param _owner address The address which owns the funds.
-   * @param _spender address The address which will spend the funds.
-   * @return A uint256 specifying the amount of tokens still available for the spender.
-   */
-  function allowance(address _owner, address _spender) public view returns (uint256) {
+  function allowance(address _owner, address _spender) public constant returns (uint256 remaining)
+  {
     return allowed[_owner][_spender];
   }
 
   /**
-   * @dev Increase the amount of tokens that an owner allowed to a spender.
-   *
-   * approve should be called when allowed[_spender] == 0. To increment
-   * allowed value is better to use this function to avoid 2 calls (and wait until
-   * the first transaction is mined)
-   * From MonolithDAO Token.sol
-   * @param _spender The address which will spend the funds.
-   * @param _addedValue The amount of tokens to increase the allowance by.
-   */
-  function increaseApproval(address _spender, uint _addedValue) public returns (bool) {
-    allowed[msg.sender][_spender] = allowed[msg.sender][_spender].add(_addedValue);
-    emit Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
+  * Internal Transfer function - Updates the checkpoint ledger
+  * @param _from {address}
+  * @param _to {address}
+  * @param _amount {uint256}
+  * @return success {bool}
+  */
+  function doTransfer(address _from, address _to, uint256 _amount) internal returns(bool)
+  {
+    require(_amount > 0);
+    require(parentSnapShotBlock < block.number);
+    require((_to != 0) && (_to != address(this)));
+
+    // If the amount being transfered is more than the balance of the
+    // account the transfer returns false
+    uint256 previousBalanceFrom = balanceOfAt(_from, block.number);
+    require(previousBalanceFrom >= _amount);
+
+    // First update the balance array with the new value for the address
+    //  sending the tokens
+    updateValueAtNow(balances[_from], previousBalanceFrom - _amount);
+
+    // Then update the balance array with the new value for the address
+    //  receiving the tokens
+    uint256 previousBalanceTo = balanceOfAt(_to, block.number);
+    require(previousBalanceTo + _amount >= previousBalanceTo); // Check for overflow
+    updateValueAtNow(balances[_to], previousBalanceTo + _amount);
+
+    // An event to make the transfer easy to find on the blockchain
+    emit Transfer(_from, _to, _amount);
     return true;
   }
+
 
   /**
-   * @dev Decrease the amount of tokens that an owner allowed to a spender.
-   *
-   * approve should be called when allowed[_spender] == 0. To decrement
-   * allowed value is better to use this function to avoid 2 calls (and wait until
-   * the first transaction is mined)
-   * From MonolithDAO Token.sol
-   * @param _spender The address which will spend the funds.
-   * @param _subtractedValue The amount of tokens to decrease the allowance by.
-   */
-  function decreaseApproval(address _spender, uint _subtractedValue) public returns (bool) {
-    uint oldValue = allowed[msg.sender][_spender];
-    if (_subtractedValue > oldValue) {
-      allowed[msg.sender][_spender] = 0;
-    } else {
-      allowed[msg.sender][_spender] = oldValue.sub(_subtractedValue);
-    }
-    emit Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
+  * Token creation functions - can only be called by the tokensale controller during the tokensale period
+  * @param _owner {address}
+  * @param _amount {uint256}
+  * @return success {bool}
+  */
+  function mint(address _owner, uint256 _amount) public onlyController canMint returns (bool)
+  {
+    uint256 curTotalSupply = totalSupply();
+    uint256 previousBalanceTo = balanceOf(_owner);
+
+    require(curTotalSupply + _amount >= curTotalSupply); // Check for overflow
+    require(previousBalanceTo + _amount >= previousBalanceTo); // Check for overflow
+
+    updateValueAtNow(totalSupplyHistory, curTotalSupply + _amount);
+    updateValueAtNow(balances[_owner], previousBalanceTo + _amount);
+    emit Transfer(0, _owner, _amount);
     return true;
   }
 
-
-
-
-  modifier canMint() {
+  modifier canMint()
+  {
     require(!mintingFinished);
     _;
   }
 
   /**
-   * @dev Function to mint tokens
-   * @param _to The address that will receive the minted tokens.
-   * @param _amount The amount of tokens to mint.
-   * @return A boolean that indicates if the operation was successful.
-   */
-  function mint(address _to, uint256 _amount) onlyOwner canMint public returns (bool) {
-    totalSupply_ = totalSupply_.add(_amount);
-    balances[_to] = balances[_to].add(_amount);
-    emit Mint(_to, _amount);
-    emit Transfer(address(0), _to, _amount);
-    return true;
+   * Internal balance method - gets a certain checkpoint value a a certain _block
+   * @param _checkpoints {Checkpoint[]} List of checkpoints - supply history or balance history
+   * @return value {uint256} Value of _checkpoints at _block
+  */
+  function getValueAt(Checkpoint[] storage _checkpoints, uint256 _block) constant internal returns (uint256)
+  {
+
+      if (_checkpoints.length == 0)
+        return 0;
+        // Shortcut for the actual value
+      if (_block >= _checkpoints[_checkpoints.length-1].fromBlock)
+        return _checkpoints[_checkpoints.length-1].value;
+      if (_block < _checkpoints[0].fromBlock)
+        return 0;
+
+      // Binary search of the value in the array
+      uint256 min = 0;
+      uint256 max = _checkpoints.length-1;
+      while (max > min)
+      {
+          uint256 mid = (max + min + 1) / 2;
+          if (_checkpoints[mid].fromBlock<=_block) {
+               min = mid;
+          } else {
+              max = mid-1;
+          }
+      }
+      return _checkpoints[min].value;
   }
+
 
   /**
-   * @dev Function to stop minting new tokens.
-   * @return True if the operation was successful.
+  * Internal update method - updates the checkpoint ledger at the current block
+  * @param _checkpoints {Checkpoint[]}  List of checkpoints - supply history or balance history
+  * @return value {uint256} Value to add to the checkpoints ledger
    */
-  function finishMinting() onlyOwner canMint public returns (bool) {
-    mintingFinished = true;
-    emit MintFinished();
-    return true;
+  function updateValueAtNow(Checkpoint[] storage _checkpoints, uint256 _value) internal {
+      if ((_checkpoints.length == 0) || (_checkpoints[_checkpoints.length-1].fromBlock < block.number))
+      {
+          Checkpoint storage newCheckPoint = _checkpoints[_checkpoints.length++];
+          newCheckPoint.fromBlock = uint128(block.number);
+          newCheckPoint.value = uint128(_value);
+      }
+      else
+      {
+          Checkpoint storage oldCheckPoint = _checkpoints[_checkpoints.length-1];
+          oldCheckPoint.value = uint128(_value);
+      }
   }
 
+
+  function min(uint256 a, uint256 b) internal pure returns (uint) {
+      return a < b ? a : b;
+  }
 }

@@ -25,40 +25,40 @@ const LOOM = artifacts.require('./contracts/tokens/LOOM.sol');
 const PRFT = artifacts.require('./contracts/tokens/PRFT.sol');
 const DAI = artifacts.require('./contracts/tokens/DAI.sol');
 
-module.exports = function(deployer, network, accounts) {
-  const admin = network === 'development' ? accounts[0] : accounts[1];
-  web3.personal.unlockAccount(admin, '123456789', 10000);
-  let weth;
-  let exchange;
-  let tokens = [];
+module.exports = function (deployer, network, accounts) {
 
-  WETH.deployed().then(async _weth => {
-    weth = _weth;
+  deployer.then(async () => {
+    // const admin = network === 'development' ? accounts[0] : accounts[1];
+    // web3.personal.unlockAccount(admin, '123456789', 10000);
+    let exchange;
+    let tokens = [];
+
     exchange = await Exchange.deployed();
-    tokens[0] = await TOMO.deployed();
-    tokens[1] = await OMG.deployed();
-    tokens[2] = await ZRX.deployed();
-    tokens[3] = await AE.deployed();
-    tokens[4] = await TRX.deployed();
-    tokens[5] = await MKR.deployed();
-    tokens[6] = await BAT.deployed();
-    tokens[7] = await REP.deployed();
-    tokens[8] = await BTM.deployed();
-    tokens[9] = await NPXS.deployed();
-    tokens[10] = await WTC.deployed();
-    tokens[11] = await KCS.deployed();
-    tokens[12] = await GNT.deployed();
-    tokens[13] = await PPT.deployed();
-    tokens[14] = await SNT.deployed();
-    tokens[15] = await DGX.deployed();
-    tokens[16] = await MITH.deployed();
-    tokens[17] = await AION.deployed();
-    tokens[18] = await LRC.deployed();
-    tokens[19] = await FUN.deployed();
-    tokens[17] = await KNC.deployed();
-    tokens[18] = await LOOM.deployed();
-    tokens[19] = await PRFT.deployed();
-    tokens[20] = await DAI.deployed();
+    tokens[tokens.length] = await WETH.deployed();
+    tokens[tokens.length] = await TOMO.deployed();
+    tokens[tokens.length] = await OMG.deployed();
+    tokens[tokens.length] = await ZRX.deployed();
+    tokens[tokens.length] = await AE.deployed();
+    tokens[tokens.length] = await TRX.deployed();
+    tokens[tokens.length] = await MKR.deployed();
+    tokens[tokens.length] = await BAT.deployed();
+    tokens[tokens.length] = await REP.deployed();
+    tokens[tokens.length] = await BTM.deployed();
+    tokens[tokens.length] = await NPXS.deployed();
+    tokens[tokens.length] = await WTC.deployed();
+    tokens[tokens.length] = await KCS.deployed();
+    tokens[tokens.length] = await GNT.deployed();
+    tokens[tokens.length] = await PPT.deployed();
+    tokens[tokens.length] = await SNT.deployed();
+    tokens[tokens.length] = await DGX.deployed();
+    tokens[tokens.length] = await MITH.deployed();
+    tokens[tokens.length] = await AION.deployed();
+    tokens[tokens.length] = await LRC.deployed();
+    tokens[tokens.length] = await FUN.deployed();
+    tokens[tokens.length] = await KNC.deployed();
+    tokens[tokens.length] = await LOOM.deployed();
+    tokens[tokens.length] = await PRFT.deployed();
+    tokens[tokens.length] = await DAI.deployed();
 
     let tokenApprovals = [];
 
@@ -77,5 +77,6 @@ module.exports = function(deployer, network, accounts) {
     } catch (e) {
       console.log(e);
     }
-  });
+
+  })
 };
