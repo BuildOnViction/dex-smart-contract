@@ -11,7 +11,7 @@
     "build": "webpack",
     "dev": "webpack-dev-server",
     "test": "truffle migrate --reset && truffle test",
-    "deploy-contracts": "truffle migrate --network development",
+    "deploy-contracts": "truffle migrate --network development -f 1 --to 9",
     "start-network": "./start-ganache.sh",
     "watch": "npm-watch"
   },
