@@ -30,7 +30,7 @@ It provides the facility to exchange ERC20 tokens. Quick glance at contract func
 
 ### Deposit/Withdraw
 
-In the deposit/withdraw mechanism, the user is required to deposit the token in the excahnge based on which he can carry out
+In the deposit/withdraw mechanism, the user is required to deposit the token in the exchange based on which he can carry out
 the trade. If the user now wishes to cancel the trade & spend the deposited tokens for some other purpose, He would need to
 create 3 transactions:
 - "Cancel order" transaction.

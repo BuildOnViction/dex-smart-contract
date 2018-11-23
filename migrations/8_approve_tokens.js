@@ -1,3 +1,5 @@
+const config = require('../config')
+
 const Exchange = artifacts.require('./Exchange.sol');
 const WETH = artifacts.require('./contracts/utils/WETH.sol');
 const TOMO = artifacts.require('./contracts/tokens/TOMO.sol');
@@ -61,12 +63,21 @@ module.exports = function (deployer, network, accounts) {
     tokens[tokens.length] = await DAI.deployed();
 
     let tokenApprovals = [];
+    let addresses = config.accounts.development
 
     for (let token of tokens) {
       for (let account of accounts) {
         tokenApprovals.push(
           token.approve(exchange.address, 1000000e18, {
             from: account
+          })
+        );
+      }
+
+      for (let address of addresses) {
+        tokenApprovals.push(
+          token.approve(exchange.address, 1000000e18, {
+            from: address
           })
         );
       }
