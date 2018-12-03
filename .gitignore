@@ -2,7 +2,7 @@
 .env
 coverage.json
 chain/*
-
+.DS_Store
 # Contracts builds
 build/contracts/*.json
 
