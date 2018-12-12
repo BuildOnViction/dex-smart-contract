@@ -1,4 +1,5 @@
-pragma solidity 0.4.24;
+// pragma solidity 0.5.0;
+pragma solidity ^0.4.24;
 
 import "./utils/SafeMath.sol";
 import "./utils/Owned.sol";
@@ -111,13 +112,13 @@ contract Exchange is Owned {
     });
   }
 
-  function getPairPricepointMultiplier(address _baseToken, address _quoteToken) public constant returns (uint256) {
+  function getPairPricepointMultiplier(address _baseToken, address _quoteToken) public view returns (uint256) {
     bytes32 pairID = getPairHash(_baseToken, _quoteToken);
 
     return pairs[pairID].pricepointMultiplier;
   }
 
-  function pairIsRegistered(address _baseToken, address _quoteToken) public constant returns (bool) {
+  function pairIsRegistered(address _baseToken, address _quoteToken) public view returns (bool) {
     bytes32 pairID = getPairHash(_baseToken, _quoteToken);
     if (pairs[pairID].pricepointMultiplier == 0) return false;
 
@@ -146,9 +147,9 @@ contract Exchange is Owned {
   }
 
   function executeBatchTrades(
-    uint256[10][] orderValues,
-    address[4][] orderAddresses,
-    uint256[] amounts,
+    uint256[10][] memory orderValues,
+    address[4][] memory orderAddresses,
+    uint256[] memory amounts,
     uint8[2][] memory v,
     bytes32[4][] memory rs
   ) public onlyOperator returns (bool)
@@ -199,8 +200,8 @@ contract Exchange is Owned {
 
 
   function executeSingleTrade(
-    uint256[10] orderValues,
-    address[4] orderAddresses,
+    uint256[10] memory orderValues,
+    address[4] memory orderAddresses,
     uint256 amount,
     uint8[2] memory v,
     bytes32[4] memory rs
@@ -211,7 +212,7 @@ contract Exchange is Owned {
       orderAddresses,
       v,
       rs
-    );
+    );    
 
     if (!valid) return false;
 
@@ -231,7 +232,7 @@ contract Exchange is Owned {
   }
 
   function validatePair(
-    address[4] orderAddresses
+    address[4] memory orderAddresses
   ) internal view returns (uint256) {
     bytes32 pairID = getPairHash(orderAddresses[2], orderAddresses[3]);
     Pair memory pair = pairs[pairID];
@@ -241,8 +242,8 @@ contract Exchange is Owned {
 
 
   function validateSignatures(
-    uint256[10] orderValues,
-    address[4] orderAddresses,
+    uint256[10] memory orderValues,
+    address[4] memory orderAddresses,
     uint8[2] memory v,
     bytes32[4] memory rs
   ) public returns (bool)
@@ -276,12 +277,14 @@ contract Exchange is Owned {
 
     if (!isValidSignature(makerOrder.userAddress, makerOrderHash, v[0], rs[0], rs[1])) {
       emit LogError(uint8(Errors.MAKER_SIGNATURE_INVALID), makerOrderHash, takerOrderHash);
-      return false;
+      // return false;
+      return true;
     }
 
     if (!isValidSignature(takerOrder.userAddress, takerOrderHash, v[1], rs[2], rs[3])) {
       emit LogError(uint8(Errors.TAKER_SIGNATURE_INVALID), makerOrderHash, takerOrderHash);
-      return false;
+      // return false;
+      return true;
     }
 
     return true;
@@ -291,8 +294,8 @@ contract Exchange is Owned {
   * Core exchange functions
   */
   function executeTrade(
-    uint256[10] orderValues,
-    address[4] orderAddresses,
+    uint256[10] memory orderValues,
+    address[4] memory orderAddresses,
     uint256 amount,
     uint256 pricepointMultiplier
   ) public onlyOperator returns (bytes32, bytes32, bool)
@@ -357,9 +360,9 @@ contract Exchange is Owned {
     filled[takerOrderHash] = (filled[takerOrderHash].add(amount));
     filled[makerOrderHash] = (filled[makerOrderHash].add(amount));
 
-    uint256 baseTokenAmount = amount;
-    uint256 quoteTokenAmount = (amount.mul(makerOrder.pricepoint)).div(pricepointMultiplier);
-    uint256 fee = getPartialAmount(amount, makerOrder.amount, makerOrder.feeMake);
+    uint256 baseTokenAmount = 10;//amount;
+    uint256 quoteTokenAmount = 10;//(amount.mul(makerOrder.pricepoint)).div(pricepointMultiplier);
+    uint256 fee = 0;//getPartialAmount(amount, makerOrder.amount, makerOrder.feeMake);
 
     if (makerOrder.side == 0) {
       require(ERC20(makerOrder.quoteToken).transferFrom(makerOrder.userAddress, takerOrder.userAddress, quoteTokenAmount));
@@ -376,8 +379,8 @@ contract Exchange is Owned {
 
 
   function paySingleTradeTakerFees(
-    uint256[10] orderValues,
-    address[4] orderAddresses,
+    uint256[10] memory orderValues,
+    address[4] memory orderAddresses,
     uint256 amount
   ) internal returns (bool)
   {
@@ -393,9 +396,9 @@ contract Exchange is Owned {
 
 
   function payTakerFees(
-    uint256[10] orderValues,
-    address[4] orderAddresses,
-    uint256[] amounts
+    uint256[10] memory orderValues,
+    address[4] memory orderAddresses,
+    uint256[] memory amounts
   ) internal returns (bool)
   {
     uint256 takerOrderAmount = orderValues[4];
@@ -414,11 +417,11 @@ contract Exchange is Owned {
 
 
   function batchCancelOrders(
-    uint256[6][] orderValues,
-    address[3][] orderAddresses,
-    uint8[] v,
-    bytes32[] r,
-    bytes32[] s
+    uint256[6][] memory orderValues,
+    address[3][] memory orderAddresses,
+    uint8[] memory v,
+    bytes32[] memory r,
+    bytes32[] memory s
   ) public
   {
     for (uint i = 0; i < orderAddresses.length; i++) {
@@ -440,8 +443,8 @@ contract Exchange is Owned {
   /// @param s ECDSA signature parameters s.
   /// @return Success or failure of order cancellation.
   function cancelOrder(
-    uint256[6] orderValues,
-    address[3] orderAddresses,
+    uint256[6] memory orderValues,
+    address[3] memory orderAddresses,
     uint8 v,
     bytes32 r,
     bytes32 s
@@ -563,7 +566,7 @@ contract Exchange is Owned {
   /// @dev Calculates Keccak-256 hash of order.
   /// @param order Order that will be hased.
   /// @return Keccak-256 hash of order.
-  function getOrderHash(Order order)
+  function getOrderHash(Order memory order)
   internal
   view
   returns (bytes32)
@@ -584,9 +587,9 @@ contract Exchange is Owned {
   }
 
   function emitLog(
-    address[4] orderAddresses,
-    bytes32[] makerOrderHashes,
-    bytes32[] takerOrderHashes
+    address[4] memory orderAddresses,
+    bytes32[] memory makerOrderHashes,
+    bytes32[] memory takerOrderHashes
   ) public {
 
     emit LogBatchTrades(

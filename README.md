@@ -2,14 +2,17 @@
 # DEX smart contract
 The smart contract samples of some tokens for the Decentralized Exchange
 
-# Init smart contracts
+## Init smart contracts
 If you have already put smart contracts in genesis block, just change the code from `await BTM.deployed()` to `await BTM.at("address")` then run
 `truffle migrate -f 3 --to 3 --network development`  
 Otherwise just run `truffle deploy --network development`  
 
-# Init seed-data for client  
+## Init seed-data for client  
 There are 2 ways to init data, first using deploy result then get data from server, second way is run:  
 `node utils/tokens.js`  then copy the output into `src/config/addresses.json` file  
+
+## Update code for server
+`truffle compile && node scripts/generateExchangeGo.js ../dex-server/contracts/contractsinterfaces/exchange.go`
 
 ## Architecture
 
