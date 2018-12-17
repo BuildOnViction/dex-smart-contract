@@ -3,14 +3,14 @@ pragma solidity ^0.4.15;
 import "../utils/SafeMath.sol";
 import "../utils/Controlled.sol";
 import "../utils/ApproveAndCallReceiver.sol";
-import "../interfaces/TOMO.sol";
+import "../interfaces/RELA.sol";
 
 
-contract TOMO is Controlled
+contract RELA is Controlled
 {
 
   using SafeMath for uint256;
-  TOMOInterface public parentToken;
+  RELAInterface public parentToken;
 
   bool public mintingFinished = false;
   string public name;
@@ -45,13 +45,13 @@ contract TOMO is Controlled
 
   constructor() public
   {
-      parentToken = TOMOInterface(0x0);
-      parentSnapShotBlock = 0;
-      name = "Tomo Token";
-      symbol = "TOMO";
-      decimals = 18;
-      creationBlock = block.number;
-      version = "0.1";
+    parentToken = RELAInterface(0x0);
+    parentSnapShotBlock = 0;
+    name = "Relayer Token";
+    symbol = "RELA";
+    decimals = 18;
+    creationBlock = block.number;
+    version = "0.1";
   }
 
   function() public payable
@@ -64,7 +64,7 @@ contract TOMO is Controlled
   * Returns the total Tomo token supply at the current block
   * @return total supply {uint256}
   */
-  function totalSupply() public constant returns (uint256)
+  function totalSupply() public view returns (uint256)
   {
     return totalSupplyAt(block.number);
   }
@@ -74,7 +74,7 @@ contract TOMO is Controlled
   * @param _blockNumber {uint256}
   * @return total supply {uint256}
   */
-  function totalSupplyAt(uint256 _blockNumber) public constant returns(uint256)
+  function totalSupplyAt(uint256 _blockNumber) public view returns(uint256)
   {
       // These next few lines are used when the totalSupply of the token is
       //  requested before a check point was ever created for this token, it
@@ -100,7 +100,7 @@ contract TOMO is Controlled
   * @param _owner {address}
   * @return balance {uint256}
    */
-  function balanceOf(address _owner) public constant returns (uint256 balance)
+  function balanceOf(address _owner) public view returns (uint256 balance)
   {
       return balanceOfAt(_owner, block.number);
   }
@@ -111,7 +111,7 @@ contract TOMO is Controlled
   * @param _blockNumber {uint256}
   * @return balance {uint256}
   */
-  function balanceOfAt(address _owner, uint256 _blockNumber) public constant returns (uint256)
+  function balanceOfAt(address _owner, uint256 _blockNumber) public view returns (uint256)
   {
     // These next few lines are used when the balance of the token is
     //  requested before a check point was ever created for this token, it
@@ -198,7 +198,7 @@ contract TOMO is Controlled
   * @param _spender {address}
   * @return remaining {uint256}
    */
-  function allowance(address _owner, address _spender) public constant returns (uint256 remaining)
+  function allowance(address _owner, address _spender) public view returns (uint256 remaining)
   {
     return allowed[_owner][_spender];
   }
@@ -268,7 +268,7 @@ contract TOMO is Controlled
    * @param _checkpoints {Checkpoint[]} List of checkpoints - supply history or balance history
    * @return value {uint256} Value of _checkpoints at _block
   */
-  function getValueAt(Checkpoint[] storage _checkpoints, uint256 _block) constant internal returns (uint256)
+  function getValueAt(Checkpoint[] storage _checkpoints, uint256 _block) view internal returns (uint256)
   {
 
       if (_checkpoints.length == 0)

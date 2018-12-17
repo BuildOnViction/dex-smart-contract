@@ -2,7 +2,7 @@ pragma solidity 0.4.24;
 
 import "./utils/SafeMath.sol";
 import "./utils/Owned.sol";
-import "./interfaces/TOMO.sol";
+import "./interfaces/RELA.sol";
 import "./interfaces/ERC20.sol";
 import "./RewardCollector.sol";
 
@@ -10,7 +10,7 @@ import "./RewardCollector.sol";
 contract RewardPools is Owned {
 
   using SafeMath for uint256;
-  TOMOInterface public tomoToken;
+  RELAInterface public tomoToken;
 
   address public rewardCollector;
 
@@ -31,7 +31,7 @@ contract RewardPools is Owned {
   {
     creationBlockNumber = block.number;
     blocksPerEpoch = 20;
-    tomoToken = TOMOInterface(_PRFTAddress);
+    tomoToken = RELAInterface(_PRFTAddress);
     rewardCollector = _rewardCollector;
   }
 
@@ -40,7 +40,7 @@ contract RewardPools is Owned {
     revert();
   }
 
-  function totalUserReward(address _accountAddress, address _tokenAddress) public constant returns (uint256) {
+  function totalUserReward(address _accountAddress, address _tokenAddress) public view returns (uint256) {
     uint256 lastEpoch = currentEpoch;
     uint256 computedEpoch = computeCurrentEpoch();
     uint256 lastWithdrawal = withdrawals[_accountAddress];
@@ -78,14 +78,14 @@ contract RewardPools is Owned {
     return totalReward;
   }
 
-  function balanceOfPool(uint256 _poolEpoch, address _tokenAddress) public returns (uint256) {
+  function balanceOfPool(uint256 _poolEpoch, address _tokenAddress) public view returns (uint256) {
     return poolBalances[_poolEpoch][_tokenAddress];
   }
 
-  function removeQuoteToken(address _tokenAddress) {
+  function removeQuoteToken(address _tokenAddress) public {
     uint i = 0;
     while (quoteTokenList[i] != _tokenAddress) {
-        i++;
+      i++;
     }
 
     while (i<quoteTokenList.length-1) {

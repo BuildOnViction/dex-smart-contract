@@ -2,23 +2,24 @@ require('dotenv').config();
 
 const contractAddresses = require('./contractAddresses.json');
 
-const quoteTokens = ['WETH', 'DAI', 'TUSD', 'USDC'];
+// const quoteTokens = ['WETH', 'DAI', 'TUSD', 'USDC'];
+const quoteTokens = ['WETH', 'DAI'];
 const baseTokens = [
   'AE',
   'BAT',
-  'BNB',
-  'GNT',
-  'KNC',
-  'LOOM',
-  'LRC',
-  'MITH',
-  'MKR',
-  'NPXS',
-  'OMG',
-  'PRFT',
-  'REP',
-  'SNT',
-  'WTC',
+  // 'BNB',
+  // 'GNT',
+  // 'KNC',
+  // 'LOOM',
+  // 'LRC',
+  // 'MITH',
+  // 'MKR',
+  // 'NPXS',
+  // 'OMG',
+  // 'PRFT',
+  // 'REP',
+  // 'SNT',
+  // 'WTC',
   'ZRX'
 ];
 
@@ -83,9 +84,46 @@ const keys = {
   '8888': []
 };
 
+let tokenContracts = null;
+const getTokenContracts = (artifacts, filters) => {
+  if (tokenContracts === null) {
+    tokenContracts = [
+      artifacts.require('../contracts/tokens/OMG.sol'),
+      artifacts.require('../contracts/tokens/BNB.sol'),
+      artifacts.require('../contracts/tokens/ZRX.sol'),
+      artifacts.require('../contracts/tokens/AE.sol'),
+      artifacts.require('../contracts/tokens/TRX.sol'),
+      artifacts.require('../contracts/tokens/MKR.sol'),
+      artifacts.require('../contracts/tokens/BAT.sol'),
+      artifacts.require('../contracts/tokens/REP.sol'),
+      artifacts.require('../contracts/tokens/BTM.sol'),
+      artifacts.require('../contracts/tokens/NPXS.sol'),
+      artifacts.require('../contracts/tokens/WTC.sol'),
+      artifacts.require('../contracts/tokens/KCS.sol'),
+      artifacts.require('../contracts/tokens/GNT.sol'),
+      artifacts.require('../contracts/tokens/PPT.sol'),
+      artifacts.require('../contracts/tokens/SNT.sol'),
+      artifacts.require('../contracts/tokens/DGX.sol'),
+      artifacts.require('../contracts/tokens/MITH.sol'),
+      artifacts.require('../contracts/tokens/AION.sol'),
+      artifacts.require('../contracts/tokens/LRC.sol'),
+      artifacts.require('../contracts/tokens/FUN.sol'),
+      artifacts.require('../contracts/tokens/KNC.sol'),
+      artifacts.require('../contracts/tokens/LOOM.sol'),
+      artifacts.require('../contracts/tokens/PRFT.sol'),
+      artifacts.require('../contracts/tokens/DAI.sol')
+    ];
+  }
+  if (!filters) return tokenContracts;
+  return tokenContracts.filter(tokenContract =>
+    filters.includes(tokenContract.contractName)
+  );
+};
+
 module.exports = {
   quoteTokens,
   baseTokens,
+  tokens: [...baseTokens, ...quoteTokens],
   takeFees,
   makeFees,
   decimals,
@@ -121,5 +159,6 @@ module.exports = {
     rinkeby: [],
     ropsten: [],
     ethereum: []
-  }
+  },
+  getTokenContracts
 };
