@@ -17,7 +17,8 @@ module.exports = {
       host: 'localhost',
       port: 8545,
       network_id: '8888',
-      gas: config.constants.MAX_GAS,
+      // gas: config.constants.MAX_GAS,
+      gas: 2100000,
       gasPrice: config.constants.DEFAULT_GAS_PRICE,
       from: '0x28074f8D0fD78629CD59290Cac185611a8d60109' // testprc main account here
     },
