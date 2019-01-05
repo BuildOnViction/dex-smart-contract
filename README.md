@@ -151,6 +151,10 @@ npm run lint
 
 This is a fork of the Proof project !
 
+Please try your best to follow the guidance here:
+
+https://chris.beams.io/posts/git-commit/
+
 ## License
 
 The smart contract (i.e. all code inside of the contracts and test directories) is licensed under the MIT License, also included in our repository in the
