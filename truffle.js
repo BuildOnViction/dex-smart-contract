@@ -1,15 +1,15 @@
 // Allows us to use ES6 in our migrations and tests.
-require('babel-register');
+require('babel-register')
 
 // Allows us to use ES6 in our migrations and tests.
-require('dotenv').config();
-var config = require('./config');
-var secret = require('./secret-config');
+require('dotenv').config()
+var config = require('./config')
+var secret = require('./secret-config')
 
-require('babel-register');
-require('babel-polyfill');
+require('babel-register')
+require('babel-polyfill')
 
-const LightWalletProvider = require('@digix/truffle-lightwallet-provider');
+const LightWalletProvider = require('@digix/truffle-lightwallet-provider')
 
 module.exports = {
   networks: {
@@ -17,8 +17,7 @@ module.exports = {
       host: 'localhost',
       port: 8545,
       network_id: '8888',
-      // gas: config.constants.MAX_GAS,
-      gas: 2100000,
+      gas: config.constants.MAX_GAS,
       gasPrice: config.constants.DEFAULT_GAS_PRICE,
       from: '0x28074f8D0fD78629CD59290Cac185611a8d60109' // testprc main account here
     },
@@ -68,4 +67,4 @@ module.exports = {
       gasPrice: 0x01
     }
   }
-};
+}
