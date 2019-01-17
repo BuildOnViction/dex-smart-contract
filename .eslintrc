@@ -8,7 +8,17 @@
     "max-len": [2, 120, 2],
     "object-curly-spacing": [2, "always"],
     "no-extend-native": "off",
-    "no-unused-vars": 1
+    "no-unused-vars": 1,
+    "comma-dangle": [2,"always-multiline"],
+    "no-else-return": 2,
+    "no-nested-ternary": 2,
+    "semi": [2,"never"],
+    "no-var": 2,
+    "object-shorthand": [2,"always"],
+    "prefer-const": 2,
+    "prefer-spread": 2,
+    "no-lonely-if": 2,
+    "no-unneeded-ternary": 2
   },
   "env": {
     "browser": true,
