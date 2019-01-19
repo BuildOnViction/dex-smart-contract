@@ -42,7 +42,7 @@ const getPrivateKeyFromEnvironment = networkName => {
     case 'rinkeby':
       return process.env.TOMO__RINKEBY_PRIVATE_KEY
     case 'local':
-      return '0x75c3e3150c0127af37e7e9df51430d36faa4c4660b6984c1edff254486d834e9'
+      return process.env.TOMO__LOCAL_PRIVATE_KEY
     default:
       throw new Error('Could not get private key from environment')
   }
