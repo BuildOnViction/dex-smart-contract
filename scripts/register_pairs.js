@@ -1,5 +1,5 @@
 const fs = require('fs')
-const path = require('path');
+const path = require('path')
 const { utils, providers, Wallet, Contract } = require('ethers')
 const { ERC20, Exchange } = require('../utils/abis')
 const { getNetworkID, getPrivateKeyFromEnvironment, getProvider } = require('../utils/helpers')
@@ -18,26 +18,28 @@ const signer = new Wallet(pk, provider)
 
 console.log(addresses)
 
-let exchange = new Contract(addresses['Exchange'], Exchange, signer)
+const exchange = new Contract(addresses['Exchange'], Exchange, signer)
 
 const registerPairs = async () => {
-  for (let quoteTokenSymbol of quoteTokens) {
-    for (let baseTokenSymbol of baseTokens) {
-      baseTokenDecimals = decimals[baseTokenSymbol]
-      quoteTokenDecimals = decimals[quoteTokenSymbol]
-      baseTokenAddress = addresses[baseTokenSymbol]
-      quoteTokenAddress = addresses[quoteTokenSymbol]
+  for (const quoteTokenSymbol of quoteTokens) {
+    for (const baseTokenSymbol of baseTokens) {
+      const baseTokenDecimals = decimals[baseTokenSymbol]
+      const quoteTokenDecimals = decimals[quoteTokenSymbol]
+      const baseTokenAddress = addresses[baseTokenSymbol]
+      const quoteTokenAddress = addresses[quoteTokenSymbol]
 
-      let defaultPricepointMultiplier = utils.bigNumberify(1e9)
-      let decimalsPricepointMultiplier = utils.bigNumberify((10 ** (baseTokenDecimals - quoteTokenDecimals)).toString())
-      let pricepointMultiplier = defaultPricepointMultiplier.mul(decimalsPricepointMultiplier)
+      const defaultPricepointMultiplier = utils.bigNumberify(1e9)
+      const decimalsPricepointMultiplier = utils.bigNumberify(
+          (10 ** (baseTokenDecimals - quoteTokenDecimals)).toString()
+      )
+      const pricepointMultiplier = defaultPricepointMultiplier.mul(decimalsPricepointMultiplier)
 
-      let tx = await exchange.registerPair(baseTokenAddress, quoteTokenAddress, pricepointMultiplier)
-      let receipt = await signer.provider.waitForTransaction(tx.hash)
+      const tx = await exchange.registerPair(baseTokenAddress, quoteTokenAddress, pricepointMultiplier)
+      const receipt = await signer.provider.waitForTransaction(tx.hash)
 
       if (receipt.status === 1) {
         console.log(`${baseTokenSymbol}/${quoteTokenSymbol} registration successful`)
-        } else {
+      } else {
         console.log(`${baseTokenSymbol}/${quoteTokenSymbol} registration failed`)
       }
     }

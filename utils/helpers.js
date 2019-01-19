@@ -1,116 +1,116 @@
-const fs = require('fs');
-const path = require('path');
-const { utils, providers } = require('ethers');
-const truffleBuildPath = path.join(__dirname, '../build/contracts');
-const files = fs.readdirSync(truffleBuildPath);
+const fs = require('fs')
+const path = require('path')
+const { utils, providers } = require('ethers')
+const truffleBuildPath = path.join(__dirname, '../build/contracts')
+const files = fs.readdirSync(truffleBuildPath)
 const otherContracts = [
   'Owned.json',
   'Migrations.json',
   'SafeMath.json',
   'ProofToken.json',
   'RewardCollector.json',
-  'ApproveAndCallReceiver.json'
-];
-const { contractAddresses } = require('../config/contractAddresses.json');
-const Web3 = require('web3');
+  'ApproveAndCallReceiver.json',
+]
+const { contractAddresses } = require('../config/contractAddresses.json')
+const Web3 = require('web3')
 
 const getNetworkID = networkName => {
   return {
     mainnet: '1',
     homestead: '1',
     rinkeby: '4',
-    local: '8888'
-  }[networkName];
-};
+    local: '8888',
+  }[networkName]
+}
 
 const getProvider = networkName => {
   switch (networkName) {
     case 'local':
       return new providers.Web3Provider(
-        new Web3.providers.HttpProvider('http://localhost:8545'),
-        { chainId: 8888 }
-      );
+                new Web3.providers.HttpProvider('http://localhost:8545'),
+                { chainId: 8888 },
+            )
     default:
-      return new providers.InfuraProvider(networkName);
+      return new providers.InfuraProvider(networkName)
   }
-};
+}
 
 const getPrivateKeyFromEnvironment = networkName => {
   switch (networkName) {
     case 'mainnet':
-      return process.env.TOMO__MAINNET_PRIVATE_KEY;
+      return process.env.TOMO__MAINNET_PRIVATE_KEY
     case 'rinkeby':
-      return process.env.TOMO__RINKEBY_PRIVATE_KEY;
+      return process.env.TOMO__RINKEBY_PRIVATE_KEY
     case 'local':
-      return '0x75c3e3150c0127af37e7e9df51430d36faa4c4660b6984c1edff254486d834e9';
+      return '0x75c3e3150c0127af37e7e9df51430d36faa4c4660b6984c1edff254486d834e9'
     default:
-      throw new Error('Could not get private key from environment');
+      throw new Error('Could not get private key from environment')
   }
-};
+}
 
 const getPriceMultiplier = (baseTokenDecimals, quoteTokenDecimals) => {
-  let defaultPricepointMultiplier = utils.bigNumberify(1e9);
-  let decimalsPricepointMultiplier = utils.bigNumberify(
-    (10 ** (baseTokenDecimals - quoteTokenDecimals)).toString()
-  );
+  const defaultPricepointMultiplier = utils.bigNumberify(1e9)
+  const decimalsPricepointMultiplier = utils.bigNumberify(
+        (10 ** (baseTokenDecimals - quoteTokenDecimals)).toString(),
+    )
 
-  return defaultPricepointMultiplier.mul(decimalsPricepointMultiplier);
-};
+  return defaultPricepointMultiplier.mul(decimalsPricepointMultiplier)
+}
 
 // file corresponds to a token if it is not in the `otherContracts` array
 const isToken = file => {
-  return otherContracts.indexOf(file) === -1;
-};
+  return otherContracts.indexOf(file) === -1
+}
 
 const getRinkebyAddresses = () => {
-  return contractAddresses['4'];
-};
+  return contractAddresses['4']
+}
 
 const getMainnetAddresses = () => {
-  return contractAddresses['1'];
-};
+  return contractAddresses['1']
+}
 
 const queryContractAddresses = () => {
-  let contracts = { '8888': {}, '1000': {}, '4': {}, '1': {} };
+  const contracts = { '8888': {}, '1000': {}, '4': {}, '1': {} }
 
-  // Configuration for testnets based on local truffle project
+    // Configuration for testnets based on local truffle project
   files.forEach((file, index) => {
-    let address;
-    let symbol;
-    let json = JSON.parse(
-      fs.readFileSync(`${truffleBuildPath}/${file}`, 'utf8')
-    );
+    let address
+    let symbol
+    const json = JSON.parse(
+            fs.readFileSync(`${truffleBuildPath}/${file}`, 'utf8'),
+        )
 
     if (json.networks['8888']) {
       if (isToken(file)) {
-        symbol = file.slice(0, -5);
-        if (symbol === 'WETH9') symbol = 'WETH';
+        symbol = file.slice(0, -5)
+        if (symbol === 'WETH9') symbol = 'WETH'
 
-        address = json.networks['8888'].address;
-        contracts['8888'][symbol] = utils.getAddress(address);
+        address = json.networks['8888'].address
+        contracts['8888'][symbol] = utils.getAddress(address)
       }
     }
 
     if (json.networks['1000']) {
       if (isToken(file)) {
-        symbol = file.slice(0, -5);
-        if (symbol === 'WETH9') symbol = 'WETH';
-        address = json.networks['1000'].address;
-        contracts['1000'][symbol] = utils.getAddress(address);
+        symbol = file.slice(0, -5)
+        if (symbol === 'WETH9') symbol = 'WETH'
+        address = json.networks['1000'].address
+        contracts['1000'][symbol] = utils.getAddress(address)
       }
     }
 
     if (json.networks['4']) {
       if (isToken(file)) {
-        symbol = file.slice(0, -5);
-        if (symbol === 'WETH9') symbol = 'WETH';
-        address = json.networks['4'].address;
-        contracts['4'][symbol] = utils.getAddress(address);
+        symbol = file.slice(0, -5)
+        if (symbol === 'WETH9') symbol = 'WETH'
+        address = json.networks['4'].address
+        contracts['4'][symbol] = utils.getAddress(address)
       }
     }
-  });
+  })
 
-  // Configuration for mainnet tokens
+    // Configuration for mainnet tokens
   contracts['1'] = {
     AE: '0x5ca9a71b1d01849c0a95490cc00559717fcf0d1d',
     BAT: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
@@ -134,14 +134,14 @@ const queryContractAddresses = () => {
     WTC: '0xb7cb1c96db6b22b0d3d9536e0108d062bd488f74',
     ZRX: '0xe41d2489571d322189246dafa5ebde1f4699f498',
     TUSD: '0x8dd5fbce2f6a956c3022ba3663759011dd51e73e',
-    USDC: '0x0'
-  };
+    USDC: '0x0',
+  }
   const contractAddressFile = path.join(
-    __dirname,
-    '../config/contractAddresses.json'
-  );
-  fs.writeFileSync(contractAddressFile, JSON.stringify(contracts), 'utf8');
-};
+        __dirname,
+        '../config/contractAddresses.json',
+    )
+  fs.writeFileSync(contractAddressFile, JSON.stringify(contracts), 'utf8')
+}
 
 module.exports = {
   getNetworkID,
@@ -150,5 +150,5 @@ module.exports = {
   getMainnetAddresses,
   getRinkebyAddresses,
   queryContractAddresses,
-  getPrivateKeyFromEnvironment
-};
+  getPrivateKeyFromEnvironment,
+}
