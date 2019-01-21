@@ -48,7 +48,7 @@ const decimals = {
 
 const operatorAddresses = {
   '1': [],
-  '8888': ['0x6e6bb166f420ddd682caebf55dafbafda74f2c9c'],
+  '8888': ['0x6e6bb166f420ddd682caebf55dafbafda74f2c9c', '0x28074f8D0fD78629CD59290Cac185611a8d60109'],
 }
 
 const testAccounts = [
