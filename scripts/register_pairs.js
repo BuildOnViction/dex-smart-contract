@@ -30,7 +30,7 @@ const registerPairs = async () => {
 
       const defaultPricepointMultiplier = utils.bigNumberify(1e9)
       const decimalsPricepointMultiplier = utils.bigNumberify(
-          (10 ** (baseTokenDecimals - quoteTokenDecimals)).toString()
+        (10 ** (baseTokenDecimals - quoteTokenDecimals)).toString(),
       )
       const pricepointMultiplier = defaultPricepointMultiplier.mul(decimalsPricepointMultiplier)
 
@@ -38,6 +38,8 @@ const registerPairs = async () => {
       const receipt = await signer.provider.waitForTransaction(tx.hash)
 
       if (receipt.status === 1) {
+        console.log(`${baseTokenSymbol}/${quoteTokenSymbol} registration successful`)
+      } else if (receipt.root) { // Fix the case of before Byzantium hard fork
         console.log(`${baseTokenSymbol}/${quoteTokenSymbol} registration successful`)
       } else {
         console.log(`${baseTokenSymbol}/${quoteTokenSymbol} registration failed`)
