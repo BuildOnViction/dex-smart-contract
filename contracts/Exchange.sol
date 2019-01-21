@@ -1,30 +1,29 @@
-// pragma solidity 0.5.0;
-pragma solidity ^0.4.24;
+pragma solidity 0.4.24;
 
-import "./utils/SafeMath.sol";
-import "./utils/Owned.sol";
-import "./interfaces/ERC20.sol";
+import './utils/SafeMath.sol';
+import './utils/Owned.sol';
+import './interfaces/ERC20.sol';
 
 contract Exchange is Owned {
   using SafeMath for uint256;
 
   enum Errors {
-      SIGNATURE_INVALID,                      // Signature is invalid
-      MAKER_SIGNATURE_INVALID,                // Maker signature is invalid
-      TAKER_SIGNATURE_INVALID,                // Taker signature is invalid
-      SIDES_INVALID,
-      PRICE_INVALID,
-      ORDER_EXPIRED,                          // Order has already expired
-      TRADE_ALREADY_COMPLETED_OR_CANCELLED,   // Trade has already been completed or it has been cancelled by taker
-      TRADE_AMOUNT_TOO_BIG,                   // Trade buyToken amount bigger than the remianing amountBuy
-      ROUNDING_ERROR_TOO_LARGE                // Rounding error too large
+    SIGNATURE_INVALID, // Signature is invalid
+    MAKER_SIGNATURE_INVALID, // Maker signature is invalid
+    TAKER_SIGNATURE_INVALID, // Taker signature is invalid
+    SIDES_INVALID,
+    PRICE_INVALID,
+    ORDER_EXPIRED, // Order has already expired
+    TRADE_ALREADY_COMPLETED_OR_CANCELLED, // Trade has already been completed or it has been cancelled by taker
+    TRADE_AMOUNT_TOO_BIG, // Trade buyToken amount bigger than the remianing amountBuy
+    ROUNDING_ERROR_TOO_LARGE                // Rounding error too large
   }
 
   string constant public VERSION = "1.0.0";
   address public rewardAccount;
   mapping(address => bool) public operators;
   mapping(bytes32 => uint) public filled;       // Mappings of orderHash => amount of amountBuy filled.
-  // mapping(bytes32 => bool) public traded;       // Mappings of tradeHash => bool value representing whether the trade is completed(true) or incomplete(false).
+  mapping(bytes32 => bool) public traded;       // Mappings of tradeHash => bool value representing whether the trade is completed(true) or incomplete(false).
   mapping(bytes32 => Pair) public pairs;
 
   event LogRewardAccountUpdate(address oldRewardAccount, address newRewardAccount);
@@ -37,33 +36,33 @@ contract Exchange is Owned {
   );
 
   event LogTrade(
-      address indexed maker,
-      address indexed taker,
-      address tokenSell,
-      address tokenBuy,
-      uint256 filledAmountSell,
-      uint256 filledAmountBuy,
-      uint paidFeeMake,
-      uint paidFeeTake,
-      bytes32 orderHash,
-      bytes32 tradeHash,
-      bytes32 indexed tokenPairHash // keccak256(makerToken, takerToken), allows subscribing to a token pair
+    address indexed maker,
+    address indexed taker,
+    address tokenSell,
+    address tokenBuy,
+    uint256 filledAmountSell,
+    uint256 filledAmountBuy,
+    uint paidFeeMake,
+    uint paidFeeTake,
+    bytes32 orderHash,
+    bytes32 tradeHash,
+    bytes32 indexed tokenPairHash // keccak256(makerToken, takerToken), allows subscribing to a token pair
   );
 
   event LogError(
-      uint8 errorId,
-      bytes32 makerOrderHash,
-      bytes32 takerOrderHash
+    uint8 errorId,
+    bytes32 makerOrderHash,
+    bytes32 takerOrderHash
   );
 
   event LogCancelOrder(
-      bytes32 orderHash,
-      address userAddress,
-      address baseToken,
-      address quoteToken,
-      uint256 amount,
-      uint256 pricepoint,
-      uint256 side
+    bytes32 orderHash,
+    address userAddress,
+    address baseToken,
+    address quoteToken,
+    uint256 amount,
+    uint256 pricepoint,
+    uint256 side
   );
 
   struct Pair {
@@ -112,13 +111,13 @@ contract Exchange is Owned {
     });
   }
 
-  function getPairPricepointMultiplier(address _baseToken, address _quoteToken) public view returns (uint256) {
+  function getPairPricepointMultiplier(address _baseToken, address _quoteToken) public constant returns (uint256) {
     bytes32 pairID = getPairHash(_baseToken, _quoteToken);
 
     return pairs[pairID].pricepointMultiplier;
   }
 
-  function pairIsRegistered(address _baseToken, address _quoteToken) public view returns (bool) {
+  function pairIsRegistered(address _baseToken, address _quoteToken) public constant returns (bool) {
     bytes32 pairID = getPairHash(_baseToken, _quoteToken);
     if (pairs[pairID].pricepointMultiplier == 0) return false;
 
@@ -130,7 +129,7 @@ contract Exchange is Owned {
   /// @return Success on setting fees account.
   function setFeeAccount(address _rewardAccount) public onlyOwner returns (bool) {
     require(_rewardAccount != address(0));
-    emit LogRewardAccountUpdate(rewardAccount,_rewardAccount);
+    emit LogRewardAccountUpdate(rewardAccount, _rewardAccount);
     rewardAccount = _rewardAccount;
     return true;
   }
@@ -141,15 +140,15 @@ contract Exchange is Owned {
   /// @return Success on setting an operator.
   function setOperator(address _operator, bool _isOperator) public onlyOwner returns (bool) {
     require(_operator != address(0));
-    emit LogOperatorUpdate(_operator,_isOperator);
+    emit LogOperatorUpdate(_operator, _isOperator);
     operators[_operator] = _isOperator;
     return true;
   }
 
   function executeBatchTrades(
-    uint256[10][] memory orderValues,
-    address[4][] memory orderAddresses,
-    uint256[] memory amounts,
+    uint256[10][] orderValues,
+    address[4][] orderAddresses,
+    uint256[] amounts,
     uint8[2][] memory v,
     bytes32[4][] memory rs
   ) public onlyOperator returns (bool)
@@ -168,7 +167,7 @@ contract Exchange is Owned {
       if (!valid) return false;
 
       uint256 pricepointMultiplier = validatePair(orderAddresses[i]);
-      bytes32 makerOrderHash; 
+      bytes32 makerOrderHash;
       bytes32 takerOrderHash;
       bool traded;
       (makerOrderHash, takerOrderHash, traded) = executeTrade(
@@ -198,10 +197,9 @@ contract Exchange is Owned {
   }
 
 
-
   function executeSingleTrade(
-    uint256[10] memory orderValues,
-    address[4] memory orderAddresses,
+    uint256[10] orderValues,
+    address[4] orderAddresses,
     uint256 amount,
     uint8[2] memory v,
     bytes32[4] memory rs
@@ -212,7 +210,7 @@ contract Exchange is Owned {
       orderAddresses,
       v,
       rs
-    );    
+    );
 
     if (!valid) return false;
 
@@ -232,8 +230,8 @@ contract Exchange is Owned {
   }
 
   function validatePair(
-    address[4] memory orderAddresses
-  ) internal view returns (uint256) {
+    address[4] orderAddresses
+  ) internal returns (uint256) {
     bytes32 pairID = getPairHash(orderAddresses[2], orderAddresses[3]);
     Pair memory pair = pairs[pairID];
 
@@ -242,8 +240,8 @@ contract Exchange is Owned {
 
 
   function validateSignatures(
-    uint256[10] memory orderValues,
-    address[4] memory orderAddresses,
+    uint256[10] orderValues,
+    address[4] orderAddresses,
     uint8[2] memory v,
     bytes32[4] memory rs
   ) public returns (bool)
@@ -277,14 +275,12 @@ contract Exchange is Owned {
 
     if (!isValidSignature(makerOrder.userAddress, makerOrderHash, v[0], rs[0], rs[1])) {
       emit LogError(uint8(Errors.MAKER_SIGNATURE_INVALID), makerOrderHash, takerOrderHash);
-      // return false;
-      return true;
+      return false;
     }
 
     if (!isValidSignature(takerOrder.userAddress, takerOrderHash, v[1], rs[2], rs[3])) {
       emit LogError(uint8(Errors.TAKER_SIGNATURE_INVALID), makerOrderHash, takerOrderHash);
-      // return false;
-      return true;
+      return false;
     }
 
     return true;
@@ -294,8 +290,8 @@ contract Exchange is Owned {
   * Core exchange functions
   */
   function executeTrade(
-    uint256[10] memory orderValues,
-    address[4] memory orderAddresses,
+    uint256[10] orderValues,
+    address[4] orderAddresses,
     uint256 amount,
     uint256 pricepointMultiplier
   ) public onlyOperator returns (bytes32, bytes32, bool)
@@ -360,9 +356,9 @@ contract Exchange is Owned {
     filled[takerOrderHash] = (filled[takerOrderHash].add(amount));
     filled[makerOrderHash] = (filled[makerOrderHash].add(amount));
 
-    uint256 baseTokenAmount = 10;//amount;
-    uint256 quoteTokenAmount = 10;//(amount.mul(makerOrder.pricepoint)).div(pricepointMultiplier);
-    uint256 fee = 0;//getPartialAmount(amount, makerOrder.amount, makerOrder.feeMake);
+    uint256 baseTokenAmount = amount;
+    uint256 quoteTokenAmount = (amount.mul(makerOrder.pricepoint)).div(pricepointMultiplier);
+    uint256 fee = getPartialAmount(amount, makerOrder.amount, makerOrder.feeMake);
 
     if (makerOrder.side == 0) {
       require(ERC20(makerOrder.quoteToken).transferFrom(makerOrder.userAddress, takerOrder.userAddress, quoteTokenAmount));
@@ -379,8 +375,8 @@ contract Exchange is Owned {
 
 
   function paySingleTradeTakerFees(
-    uint256[10] memory orderValues,
-    address[4] memory orderAddresses,
+    uint256[10] orderValues,
+    address[4] orderAddresses,
     uint256 amount
   ) internal returns (bool)
   {
@@ -396,9 +392,9 @@ contract Exchange is Owned {
 
 
   function payTakerFees(
-    uint256[10] memory orderValues,
-    address[4] memory orderAddresses,
-    uint256[] memory amounts
+    uint256[10] orderValues,
+    address[4] orderAddresses,
+    uint256[] amounts
   ) internal returns (bool)
   {
     uint256 takerOrderAmount = orderValues[4];
@@ -417,11 +413,11 @@ contract Exchange is Owned {
 
 
   function batchCancelOrders(
-    uint256[6][] memory orderValues,
-    address[3][] memory orderAddresses,
-    uint8[] memory v,
-    bytes32[] memory r,
-    bytes32[] memory s
+    uint256[6][] orderValues,
+    address[3][] orderAddresses,
+    uint8[] v,
+    bytes32[] r,
+    bytes32[] s
   ) public
   {
     for (uint i = 0; i < orderAddresses.length; i++) {
@@ -443,8 +439,8 @@ contract Exchange is Owned {
   /// @param s ECDSA signature parameters s.
   /// @return Success or failure of order cancellation.
   function cancelOrder(
-    uint256[6] memory orderValues,
-    address[3] memory orderAddresses,
+    uint256[6] orderValues,
+    address[3] orderAddresses,
     uint8 v,
     bytes32 r,
     bytes32 s
@@ -547,32 +543,29 @@ contract Exchange is Owned {
 
   /*
   *   Internal functions
-  *   pure means no access to storage
   */
 
   function getPairHash(address _baseToken, address _quoteToken)
   internal
-  pure
+  view
   returns (bytes32)
   {
-    return keccak256(
-      abi.encodePacked(
+    return keccak256(abi.encodePacked(
         _baseToken,
         _quoteToken
-    ));
+      ));
   }
 
 
   /// @dev Calculates Keccak-256 hash of order.
   /// @param order Order that will be hased.
   /// @return Keccak-256 hash of order.
-  function getOrderHash(Order memory order)
+  function getOrderHash(Order order)
   internal
   view
   returns (bytes32)
   {
-    return keccak256(
-      abi.encodePacked(
+    return keccak256(abi.encodePacked(
         address(this),
         order.userAddress,
         order.baseToken,
@@ -583,13 +576,13 @@ contract Exchange is Owned {
         order.salt,
         order.feeMake,
         order.feeTake
-    ));
+      ));
   }
 
   function emitLog(
-    address[4] memory orderAddresses,
-    bytes32[] memory makerOrderHashes,
-    bytes32[] memory takerOrderHashes
+    address[4] orderAddresses,
+    bytes32[] makerOrderHashes,
+    bytes32[] takerOrderHashes
   ) public {
 
     emit LogBatchTrades(
