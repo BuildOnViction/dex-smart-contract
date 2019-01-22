@@ -12,8 +12,6 @@ const networkID = getNetworkID(network)
 const pk = getPrivateKeyFromEnvironment(network)
 const addresses = contractAddresses[networkID]
 const operators = operatorAddresses[networkID]
-// '63739bbdf74143aeb0e6d8bb8307084f'
-// console.log(operators)
 const provider = getProvider(network)
 const signer = new Wallet(pk, provider)
 

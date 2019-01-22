@@ -1,13 +1,12 @@
 const fs = require('fs')
 const path = require('path')
-const argv = require('yargs').argv
 const { utils, providers, Wallet, Contract } = require('ethers')
 const { Exchange } = require('../utils/abis')
 const { contractAddresses, rewardAddresses } = require('../config')
 const { getNetworkID, getPrivateKeyFromEnvironment, getProvider } = require('../utils/helpers')
 
-const network = argv.network
-if (!network) throw new Error('Usage: node register_operators.js {network}')
+const network = process.argv[2]
+if (!network) throw new Error('Usage: node register_reward_account.js {network}')
 
 const networkID = getNetworkID(network)
 const pk = getPrivateKeyFromEnvironment(network)
