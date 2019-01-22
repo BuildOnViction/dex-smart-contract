@@ -18,16 +18,20 @@ const provider = getProvider(network)
 const signer = new Wallet(pk, provider)
 
 const setOperators = async () => {
-  for (const operator of operators) {
-    const exchange = new Contract(addresses['Exchange'], Exchange, signer)
-    const tx = await exchange.setOperator(operator, true)
-    const receipt = await signer.provider.waitForTransaction(tx.hash)
+  try {
+    for (const operator of operators) {
+      const exchange = new Contract(addresses['Exchange'], Exchange, signer)
+      const tx = await exchange.setOperator(operator, true)
+      const receipt = await signer.provider.waitForTransaction(tx.hash)
 
-    if (receipt.status === 0) {
-      console.log(`Transaction ${tx.hash} failed`)
-    } else {
-      console.log(`${operator} is now an operator`)
+      if (receipt.status === 0) {
+        console.log(`Transaction ${tx.hash} failed`)
+      } else {
+        console.log(`${operator} is now an operator`)
+      }
     }
+  } catch (err) {
+    console.log(err)
   }
 }
 
