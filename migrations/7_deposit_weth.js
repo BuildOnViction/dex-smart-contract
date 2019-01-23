@@ -1,20 +1,20 @@
-const WETH = artifacts.require('./contracts/utils/WETH.sol');
+const WETH = artifacts.require('./contracts/utils/WETH.sol')
 // const config = require('../config')
 
-module.exports = function(deployer, network, accounts) {
+module.exports = function (deployer, network, accounts) {
   // if (network === 'development') return
 
   WETH.deployed().then(async weth => {
-    let deposits = [];
+    const deposits = []
 
-    for (let account of accounts) {
-      web3.personal.unlockAccount(account, '123456789', 10000);
+    for (const account of accounts) {
+      web3.personal.unlockAccount(account, '123456789', 10000)
       deposits.push(
         weth.deposit({
           from: account,
-          value: 10000000e18
-        })
-      );
+          value: 10000000e18,
+        }),
+      )
     }
 
     // let addresses = config.accounts.development
@@ -27,6 +27,6 @@ module.exports = function(deployer, network, accounts) {
     //   );
     // }
 
-    await Promise.all(deposits);
-  });
-};
+    await Promise.all(deposits)
+  })
+}
