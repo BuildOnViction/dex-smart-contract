@@ -12,7 +12,7 @@ module.exports = function (deployer, network, accounts) {
       deposits.push(
         weth.deposit({
           from: account,
-          value: 10000000e18,
+          value: 1e6 * 1e18, // 1,000,000 WETH
         }),
       )
     }

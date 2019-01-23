@@ -145,7 +145,11 @@ module.exports = {
     TESTING_FAIL: 'QmUGo9mjcdc232p4YUgGf5mdZ5aAvVrVpp8AXiN4AuvBZd',
   },
   accounts: {
-    development: ['0x6e6bb166f420ddd682caebf55dafbafda74f2c9c'],
+    development: [
+      '0x6e6bb166f420ddd682caebf55dafbafda74f2c9c',
+      '0x8986dacd4E5E27312f61c0b373C46058FC7B5f87',
+      '0x2aBa1ED41aB0B6531E2FA962dfe94A7b3cCA20e1',
+    ],
     rinkeby: [],
     ropsten: [],
     ethereum: [],

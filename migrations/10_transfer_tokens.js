@@ -63,50 +63,50 @@ const mineTx = (promiseOrTx, interval) => {
 
 module.exports = function (deployer, network, accounts) {
   let admin, addresses
-
-  if (network === 'development') return
+  // if (network === 'development') return
 
   if (network === 'rinkeby') {
     admin = accounts[0]
     addresses = config.accounts.rinkeby
   } else {
     admin = accounts[0]
-    addresses = accounts
+    addresses = config.accounts.development
   }
+  console.log(addresses)
 
-  BNB.deployed()
+  DAI.deployed()
     .then(async (_token1) => {
       tokens[0] = _token1
-      tokens[1] = await OMG.deployed()
-      tokens[2] = await ZRX.deployed()
-      tokens[3] = await AE.deployed()
-      tokens[4] = await TRX.deployed()
-      tokens[5] = await MKR.deployed()
-      tokens[6] = await BAT.deployed()
-      tokens[7] = await REP.deployed()
-      tokens[8] = await BTM.deployed()
-      tokens[9] = await NPXS.deployed()
-      tokens[10] = await WTC.deployed()
-      tokens[11] = await KCS.deployed()
-      tokens[12] = await GNT.deployed()
-      tokens[13] = await PPT.deployed()
-      tokens[14] = await SNT.deployed()
-      tokens[15] = await DGX.deployed()
-      tokens[16] = await MITH.deployed()
-      tokens[17] = await AION.deployed()
-      tokens[18] = await LRC.deployed()
-      tokens[19] = await FUN.deployed()
-      tokens[20] = await KNC.deployed()
-      tokens[21] = await LOOM.deployed()
-      tokens[22] = await PRFT.deployed()
-      tokens[23] = await DAI.deployed()
+      // tokens[1] = await OMG.deployed()
+      tokens[1] = await ZRX.deployed()
+      tokens[2] = await AE.deployed()
+      // tokens[4] = await TRX.deployed()
+      // tokens[5] = await MKR.deployed()
+      tokens[3] = await BAT.deployed()
+      // tokens[7] = await REP.deployed()
+      // tokens[8] = await BTM.deployed()
+      // tokens[9] = await NPXS.deployed()
+      // tokens[10] = await WTC.deployed()
+      // tokens[11] = await KCS.deployed()
+      // tokens[12] = await GNT.deployed()
+      // tokens[13] = await PPT.deployed()
+      // tokens[14] = await SNT.deployed()
+      // tokens[15] = await DGX.deployed()
+      // tokens[16] = await MITH.deployed()
+      // tokens[17] = await AION.deployed()
+      // tokens[18] = await LRC.deployed()
+      // tokens[19] = await FUN.deployed()
+      // tokens[20] = await KNC.deployed()
+      // tokens[21] = await LOOM.deployed()
+      // tokens[22] = await PRFT.deployed()
+      // tokens[23] = await DAI.deployed()
 
       const transfers = []
 
       try {
         for (let i = 0; i < tokens.length - 1; i++) {
           for (let j = 0; j < addresses.length - 1; j++) {
-            transfers.push(tokens[i].transfer(addresses[j], 1000000e18, { from: admin }))
+            transfers.push(tokens[i].transfer(addresses[j], 1e2 * 1e18, { from: admin }))
           }
         }
 
