@@ -7,7 +7,7 @@ module.exports = function (deployer, network, accounts) {
     const tokens = config.getTokenContracts(artifacts, config.tokens)
 
     const promises = tokens.map(token => {
-      return deployer.deploy(token, admin, 1e6 * 1e18) // 1,000,000 tokens
+      return deployer.deploy(token, admin, 1e7 * 1e18) // 10,000,000 tokens
     })
 
     await Promise.all(promises)
