@@ -15,8 +15,10 @@ module.exports = function (deployer, network, accounts) {
 
     // const addresses = config.accounts.development
     // for (const address of addresses) {
-    //   deposits.push(weth.deposit({ from: address, value: 1e2 * 1e18 }), // Other accounts in config file
-    //   )
+    //   if (address === '0x8986dacd4E5E27312f61c0b373C46058FC7B5f87') {
+    //     web3.personal.unlockAccount(address, '123456xx', 10000)
+    //     deposits.push(weth.deposit({ from: address, value: 1e2 * 1e18 })) // Other accounts in config file
+    //   }
     // }
 
     await Promise.all(deposits)

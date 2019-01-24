@@ -103,6 +103,7 @@ const getTokenContracts = (artifacts, filters) => {
       artifacts.require('../contracts/tokens/LOOM.sol'),
       artifacts.require('../contracts/tokens/PRFT.sol'),
       artifacts.require('../contracts/tokens/DAI.sol'),
+      artifacts.require('../contracts/utils/WETH.sol'),
     ]
   }
   if (!filters) return tokenContracts
