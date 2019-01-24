@@ -29,6 +29,8 @@ contract Exchange is Owned {
   event LogRewardAccountUpdate(address oldRewardAccount, address newRewardAccount);
   event LogOperatorUpdate(address operator, bool isOperator);
 
+  event LogTest(string test);
+
   event LogBatchTrades(
     bytes32[] makerOrderHashes,
     bytes32[] takerOrderHashes,
@@ -105,6 +107,7 @@ contract Exchange is Owned {
   /// @return Success on setting fees account.
   function setRewardAccount(address _rewardAccount) public onlyOwner returns (bool) {
     require(_rewardAccount != address(0));
+    emit LogTest("Inside setRewardAccount");
     emit LogRewardAccountUpdate(rewardAccount, _rewardAccount);
     rewardAccount = _rewardAccount;
     return true;
@@ -129,6 +132,7 @@ contract Exchange is Owned {
     bytes32[4][] memory rs
   ) public onlyOperator returns (bool)
   {
+    emit LogTest("kfhwjkfwfjewkw");
     bytes32[] memory makerOrderHashes = new bytes32[](orderAddresses.length);
     bytes32[] memory takerOrderHashes = new bytes32[](orderAddresses.length);
 
@@ -145,6 +149,7 @@ contract Exchange is Owned {
       bytes32 makerOrderHash;
       bytes32 takerOrderHash;
       bool traded;
+      emit LogTest("2");
       (makerOrderHash, takerOrderHash, traded) = executeTrade(
         orderValues[i],
         orderAddresses[i],
@@ -157,12 +162,14 @@ contract Exchange is Owned {
       }
     }
 
+    emit LogTest("5");
     payTakerFees(
       orderValues[0], //takerOrder.amount
       orderAddresses[0], //takerOrder.feeTake
       amounts
     );
 
+    emit LogTest("6");
     emitLog(
       orderAddresses[0],
       makerOrderHashes,
@@ -257,6 +264,7 @@ contract Exchange is Owned {
     uint256 amount
   ) public onlyOperator returns (bytes32, bytes32, bool)
   {
+    emit LogTest("3");
     Order memory makerOrder = Order({
       userAddress: orderAddresses[0],
       baseToken: orderAddresses[2],
@@ -331,7 +339,7 @@ contract Exchange is Owned {
       require(ERC20(takerOrder.quoteToken).transferFrom(takerOrder.userAddress, rewardAccount, fee));
       require(ERC20(takerOrder.quoteToken).transferFrom(takerOrder.userAddress, makerOrder.userAddress, quoteTokenAmount - fee));
     }
-
+    emit LogTest("4");
     return (makerOrderHash, takerOrderHash, true);
   }
 
