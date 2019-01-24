@@ -826,6 +826,18 @@ const Exchange = [
     'inputs': [
       {
         'indexed': false,
+        'name': 'test',
+        'type': 'string',
+      },
+    ],
+    'name': 'LogTest',
+    'type': 'event',
+  },
+  {
+    'anonymous': false,
+    'inputs': [
+      {
+        'indexed': false,
         'name': 'operator',
         'type': 'address',
       },
