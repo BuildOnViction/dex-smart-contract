@@ -14,7 +14,8 @@ module.exports = function (deployer, network, accounts) {
       exchange = await Exchange.deployed()
 
       for (const account of accounts) {
-        approvals.push(weth.approve(exchange.address, 500000e18, { from: account }))
+        // Approve the exchange with 10,000,000 tokens
+        approvals.push(weth.approve(exchange.address, 1e7 * 1e18, { from: account }))
       }
 
       await Promise.all(approvals)
