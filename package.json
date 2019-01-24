@@ -11,7 +11,7 @@
     "build": "webpack",
     "dev": "webpack-dev-server",
     "test": "truffle migrate --reset && truffle test",
-    "deploy-contracts": "truffle migrate --network development -f 1 --to 9",
+    "deploy-contracts": "truffle migrate --network development -f 1 --to 11",
     "generate-exchange-go": "node scripts/generateExchangeGo.js ../dex-server/contracts/contractsinterfaces/exchange.go",
     "start-network": "./start-ganache.sh",
     "watch": "npm-watch"

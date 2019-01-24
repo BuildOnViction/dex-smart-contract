@@ -21,7 +21,8 @@ module.exports = function (deployer, network, accounts) {
     for (const token of deployedTokens) {
       for (const account of accounts) {
         tokenApprovals.push(
-          token.approve(exchange.address, 1000000e18, {
+          // Approve 10,000,000 tokens
+          token.approve(exchange.address, 1e7 * 1e18, {
             from: account,
           }),
         )

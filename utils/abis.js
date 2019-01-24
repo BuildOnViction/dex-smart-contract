@@ -1234,10 +1234,6 @@ const Exchange = [
         'name': 'amount',
         'type': 'uint256',
       },
-      {
-        'name': 'pricepointMultiplier',
-        'type': 'uint256',
-      },
     ],
     'name': 'executeTrade',
     'outputs': [
