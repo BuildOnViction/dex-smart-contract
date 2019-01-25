@@ -331,7 +331,6 @@ contract Exchange is Owned {
       require(ERC20(takerOrder.quoteToken).transferFrom(takerOrder.userAddress, rewardAccount, fee));
       require(ERC20(takerOrder.quoteToken).transferFrom(takerOrder.userAddress, makerOrder.userAddress, quoteTokenAmount - fee));
     }
-
     return (makerOrderHash, takerOrderHash, true);
   }
 

@@ -48,12 +48,12 @@ const decimals = {
 
 const operatorAddresses = {
   '1': [],
-  '8888': ['0x6e6bb166f420ddd682caebf55dafbafda74f2c9c', '0x28074f8D0fD78629CD59290Cac185611a8d60109'],
+  '8888': ['0xF9D87abd60435b70415CcC1FAAcA4F8B91786eDb', '0xD3050147F1AC4c552941930C7b27386dE8A710b8'],
 }
 
 const rewardAddresses = {
   '1': '',
-  '8888': '0x6e6bb166f420ddd682caebf55dafbafda74f2c9c',
+  '8888': '0xD3050147F1AC4c552941930C7b27386dE8A710b8',
 }
 
 const testAccounts = [
@@ -147,9 +147,8 @@ module.exports = {
   },
   accounts: {
     development: [
-      '0x6e6bb166f420ddd682caebf55dafbafda74f2c9c',
-      '0x8986dacd4E5E27312f61c0b373C46058FC7B5f87',
-      '0x2aBa1ED41aB0B6531E2FA962dfe94A7b3cCA20e1',
+      '0xF069080F7acB9a6705b4a51F84d9aDc67b921bDF',
+      '0x657B4CbA193CCac878a3561F36329Facd6D19825',
     ],
     rinkeby: [],
     ropsten: [],

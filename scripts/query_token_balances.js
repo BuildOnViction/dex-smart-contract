@@ -6,7 +6,7 @@ const { getNetworkID, getPrivateKeyFromEnvironment, getProvider } = require('../
 const accounts = require('../config').accounts.development
 
 const network = process.argv[2]
-if (!network) throw new Error('Usage: node test_exchange.js {network}')
+if (!network) throw new Error('Usage: node query_token_balances.js {network}')
 
 const networkID = getNetworkID(network)
 const pk = getPrivateKeyFromEnvironment(network)
