@@ -55,10 +55,6 @@ yarn deploy-contracts
 ```
 node scripts/update_contract_addresses.js
 ```
-6. Generate Exchange in Golang
-```
-yarn generate-exchange-go
-```
 7. Create .env file
 ```
 cp .env.sample .env
@@ -67,20 +63,6 @@ cp .env.sample .env
 ```
 For example, change TOMO__MAINNET_PRIVATE_KEY to your Ethereum client's private key
 ```
-9. Register operators on smart contract
-```
-node scripts/register_operators.js {network}
-```
-network can be `mainnet`, `homestead`, `rinkeby` or `local`.
-
-We should choose `local` for current deployment
-10. Register reward account on smart contract
-```
-node scripts/register_reward_account.js {network}
-```
-network can be `mainnet`, `homestead`, `rinkeby` or `local`.
-
-We should choose `local` for current deployment
 
 ----------------
 ## IV. dex-client
