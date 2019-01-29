@@ -51,18 +51,6 @@ yarn global add truffle
 ```
 yarn deploy-contracts
 ```
-5. Update contract addresses in file `config/contractAddresses.json`
-```
-node scripts/update_contract_addresses.js
-```
-7. Create .env file
-```
-cp .env.sample .env
-```
-8. Update .env file with your parameters (if needed)
-```
-For example, change TOMO__MAINNET_PRIVATE_KEY to your Ethereum client's private key
-```
 
 ----------------
 ## IV. dex-client
