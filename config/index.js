@@ -3,24 +3,25 @@ require('dotenv').config()
 const contractAddresses = require('./contractAddresses.json')
 
 // const quoteTokens = ['WETH', 'DAI', 'TUSD', 'USDC'];
-const quoteTokens = ['WETH', 'DAI']
+const quoteTokens = []
 const baseTokens = [
-  'AE',
-  'BAT',
-    // 'BNB',
-    // 'GNT',
-    // 'KNC',
-    // 'LOOM',
-    // 'LRC',
-    // 'MITH',
-    // 'MKR',
-    // 'NPXS',
-    // 'OMG',
-    // 'PRFT',
-    // 'REP',
-    // 'SNT',
-    // 'WTC',
-  'ZRX',
+  'ETH',
+  // 'AE',
+  // 'BAT',
+  // 'BNB',
+  // 'GNT',
+  // 'KNC',
+  // 'LOOM',
+  // 'LRC',
+  // 'MITH',
+  // 'MKR',
+  // 'NPXS',
+  // 'OMG',
+  // 'PRFT',
+  // 'REP',
+  // 'SNT',
+  // 'WTC',
+  // 'ZRX',
 ]
 
 const decimals = {
@@ -79,6 +80,7 @@ let tokenContracts = null
 const getTokenContracts = (artifacts, filters) => {
   if (tokenContracts === null) {
     tokenContracts = [
+      artifacts.require('../contracts/tokens/ETH.sol'),
       artifacts.require('../contracts/tokens/OMG.sol'),
       artifacts.require('../contracts/tokens/BNB.sol'),
       artifacts.require('../contracts/tokens/ZRX.sol'),
@@ -106,8 +108,8 @@ const getTokenContracts = (artifacts, filters) => {
   }
   if (!filters) return tokenContracts
   return tokenContracts.filter(tokenContract =>
-        filters.includes(tokenContract.contractName),
-    )
+    filters.includes(tokenContract.contractName),
+  )
 }
 
 module.exports = {
@@ -120,7 +122,7 @@ module.exports = {
   testAccounts,
   contractAddresses,
   keys,
-    // truffle config
+  // truffle config
   infura: {
     ethereum: 'https://mainnet.infura.io/Oi27hEUIuGqMsrYGpI7e',
     ropsten: 'https://ropsten.infura.io/Oi27hEUIuGqMsrYGpI7e',

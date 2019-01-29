@@ -3,6 +3,6 @@
  * It is useful for testing and queries the tokens that are deployed
  * The scripts the TOMO__DEX_PATH to be set
  */
-const { queryContractAddresses } = require('../utils/helpers');
+const { queryContractAddresses } = require('../utils/helpers')
 
-queryContractAddresses();
+queryContractAddresses()
