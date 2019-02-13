@@ -63,6 +63,11 @@ module.exports = function (deployer, network, accounts) {
           // Transfer 100,000 tokens to other accounts in config file
           transfers.push(deployedToken.transfer(address, 1e5 * 1e18, { from: admin }))
         }
+
+        for (const marketMaker of config.accounts.marketMaker) {
+          // Transfer 1,000,000 tokens to market maker accounts in config file
+          transfers.push(deployedToken.transfer(marketMaker, 1e6 * 1e18, { from: admin }))
+        }
       }
 
       await Promise.all(transfers)
