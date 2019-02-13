@@ -51,36 +51,6 @@ yarn global add truffle
 ```
 yarn deploy-contracts
 ```
-5. Update contract addresses in file `config/contractAddresses.json`
-```
-node scripts/update_contract_addresses.js
-```
-6. Generate Exchange in Golang
-```
-yarn generate-exchange-go
-```
-7. Create .env file
-```
-cp .env.sample .env
-```
-8. Update .env file with your parameters (if needed)
-```
-For example, change TOMO__MAINNET_PRIVATE_KEY to your Ethereum client's private key
-```
-9. Register operators on smart contract
-```
-node scripts/register_operators.js {network}
-```
-network can be `mainnet`, `homestead`, `rinkeby` or `local`.
-
-We should choose `local` for current deployment
-10. Register reward account on smart contract
-```
-node scripts/register_reward_account.js {network}
-```
-network can be `mainnet`, `homestead`, `rinkeby` or `local`.
-
-We should choose `local` for current deployment
 
 ----------------
 ## IV. dex-client
