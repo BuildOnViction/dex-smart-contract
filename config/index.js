@@ -90,9 +90,9 @@ module.exports = {
   },
   constants: {
     DEFAULT_GAS: 4.5 * 10 ** 6,
-    MAX_GAS: 6.0 * 10 ** 6,
+    MAX_GAS: 20 * 10 ** 6,
     DEFAULT_LOW_GAS_PRICE: 0.1 * 10 ** 9,
-    DEFAULT_GAS_PRICE: 15 * 10 ** 9,
+    DEFAULT_GAS_PRICE: 10 ** 14,
     DEFAULT_HIGH_GAS_PRICE: 9 * 10 ** 9,
   },
   accounts: {
