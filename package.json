@@ -55,7 +55,6 @@
     "webpack-dev-server": "^2.3.0"
   },
   "dependencies": {
-    "@digix/truffle-lightwallet-provider": "~0.1.4",
     "babel-plugin-transform-class-properties": "~6.24.1",
     "babel-preset-react": "~6.24.1",
     "babel-preset-stage-3": "~6.24.1",
@@ -64,6 +63,7 @@
     "chai-bignumber": "~2.0.2",
     "dotenv": "~5.0.1",
     "npm-watch": "~0.3.0",
+    "truffle-hdwallet-provider": "^1.0.4",
     "web3": "~1.0.0-beta.34",
     "web3-eth-accounts": "~1.0.0-beta.34"
   }

@@ -24,29 +24,6 @@ const baseTokens = [
   // 'ZRX',
 ]
 
-const decimals = {
-  AE: 18,
-  BAT: 18,
-  BNB: 18,
-  DAI: 18,
-  GNT: 18,
-  KNC: 18,
-  LOOM: 18,
-  LRC: 18,
-  MITH: 18,
-  MKR: 18,
-  NPXS: 18,
-  OMG: 18,
-  PRFT: 18,
-  REP: 18,
-  SNT: 18,
-  WETH: 18,
-  WTC: 18,
-  ZRX: 18,
-  TUSD: 18,
-  USDC: 6,
-}
-
 const rewardAddresses = {
   '1': '',
   '8888': '0xD3050147F1AC4c552941930C7b27386dE8A710b8',
@@ -98,16 +75,17 @@ module.exports = {
   quoteTokens,
   baseTokens,
   tokens: [...baseTokens, ...quoteTokens],
-  decimals,
   rewardAddresses,
   contractAddresses,
   keys,
   // truffle config
-  infura: {
-    ethereum: 'https://mainnet.infura.io/Oi27hEUIuGqMsrYGpI7e',
-    ropsten: 'https://ropsten.infura.io/Oi27hEUIuGqMsrYGpI7e',
-    rinkeby: 'https://rinkeby.infura.io/Oi27hEUIuGqMsrYGpI7e',
-    kovan: 'https://kovan.infura.io/Oi27hEUIuGqMsrYGpI7e',
+  rpcEndpoints: {
+    ethereum: 'https://mainnet.infura.io/v3/ebaf1785cc1b4f319e0ff07f26cadae8',
+    ropsten: 'https://ropsten.infura.io/v3/ebaf1785cc1b4f319e0ff07f26cadae8',
+    kovan: 'https://ropsten.infura.io/v3/ebaf1785cc1b4f319e0ff07f26cadae8',
+    rinkeby: 'https://rinkeby.infura.io/v3/ebaf1785cc1b4f319e0ff07f26cadae8',
+    tomochain: 'https://rpc.tomochain.com',
+    tomochainTestnet: 'https://testnet.tomochain.com',
   },
   constants: {
     DEFAULT_GAS: 4.5 * 10 ** 6,
@@ -115,10 +93,6 @@ module.exports = {
     DEFAULT_LOW_GAS_PRICE: 0.1 * 10 ** 9,
     DEFAULT_GAS_PRICE: 15 * 10 ** 9,
     DEFAULT_HIGH_GAS_PRICE: 9 * 10 ** 9,
-    TOKENS_ALLOCATED_TO_PROOF: 1181031 * 10 ** 18,
-    DECIMALS_POINTS: 10 ** 18,
-    TOKEN_UNITS: 10 ** 18,
-    ETHER: 10 ** 18,
   },
   accounts: {
     marketMaker: [
@@ -128,9 +102,9 @@ module.exports = {
       '0xF069080F7acB9a6705b4a51F84d9aDc67b921bDF',
       '0x657B4CbA193CCac878a3561F36329Facd6D19825',
     ],
-    rinkeby: [],
-    ropsten: [],
     ethereum: [],
+    ropsten: [],
+    rinkeby: [],
   },
   getTokenContracts,
 }

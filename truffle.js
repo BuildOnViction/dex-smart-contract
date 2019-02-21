@@ -9,7 +9,7 @@ const secret = require('./secret-config')
 require('babel-register')
 require('babel-polyfill')
 
-const LightWalletProvider = require('@digix/truffle-lightwallet-provider')
+const HDWalletProvider = require('truffle-hdwallet-provider')
 
 module.exports = {
   networks: {
@@ -21,50 +21,35 @@ module.exports = {
       gasPrice: config.constants.DEFAULT_GAS_PRICE,
       from: '0xF9D87abd60435b70415CcC1FAAcA4F8B91786eDb', // testprc main account here
     },
-    development_geth: {
-      host: 'localhost',
-      port: 8545,
-      network_id: '8888',
-      gas: config.constants.MAX_GAS,
-      gasPrice: config.constants.DEFAULT_GAS_PRICE,
-      from: '0x6e6BB166F420DDd682cAEbf55dAfBaFda74f2c9c', // testprc main account here
-    },
     ethereum: {
-      provider: new LightWalletProvider({
-        keystore: secret.ethereum.keystore,
-        password: secret.ethereum.password,
-        rpcUrl: config.infura.ethereum,
-      }),
+      provider: () => new HDWalletProvider(secret.ethereum.mnemonic, config.rpcEndpoints.ethereum),
       network_id: '1',
       gas: config.constants.MAX_GAS,
       gasPrice: config.constants.DEFAULT_GAS_PRICE,
     },
     ropsten: {
-      provider: new LightWalletProvider({
-        keystore: secret.ropsten.keystore,
-        password: secret.ropsten.password,
-        rpcUrl: config.infura.ropsten,
-      }),
+      provider: () => new HDWalletProvider(secret.ropsten.mnemonic, config.rpcEndpoints.ropsten),
       gas: config.constants.MAX_GAS,
       gasPrice: config.constants.DEFAULT_GAS_PRICE,
       network_id: '3',
     },
     rinkeby: {
-      provider: new LightWalletProvider({
-        keystore: secret.rinkeby.keystore,
-        password: secret.rinkeby.password,
-        rpcUrl: config.infura.rinkeby,
-      }),
+      provider: () => new HDWalletProvider(secret.rinkeby.mnemonic, config.rpcEndpoints.rinkeby),
       gas: config.constants.MAX_GAS,
       gasPrice: config.constants.DEFAULT_GAS_PRICE,
       network_id: '4',
     },
-    coverage: {
-      host: 'localhost',
-      network_id: '*',
-      port: 8555,
-      gas: 0xfffffffffff,
-      gasPrice: 0x01,
+    tomochain: {
+      provider: () => new HDWalletProvider(secret.tomochain.mnemonic, config.rpcEndpoints.tomochain),
+      gas: config.constants.MAX_GAS,
+      gasPrice: config.constants.DEFAULT_GAS_PRICE,
+      network_id: '88',
+    },
+    tomochainTestnet: {
+      provider: () => new HDWalletProvider(secret.tomochainTestnet.mnemonic, config.rpcEndpoints.tomochainTestnet),
+      gas: config.constants.MAX_GAS,
+      gasPrice: config.constants.DEFAULT_GAS_PRICE,
+      network_id: '89',
     },
   },
 }

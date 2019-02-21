@@ -1,16 +1,19 @@
-let config = {
-  rinkeby: {
-    keystore: process.env.RINKEBY_KEYSTORE,
-    password: process.env.RINKEBY_PASSWORD
+const config = {
+  ethereum: {
+    mnemonic: process.env.ETHEREUM_MNEMONIC,
   },
   ropsten: {
-    keystore: process.env.ROPSTEN_KEYSTORE,
-    password: process.env.ROPSTEN_PASSWORD
+    mnemonic: process.env.ROPSTEN_MNEMONIC,
   },
-  ethereum: {
-    keystore: process.env.ETHEREUM_KEYSTORE,
-    password: process.env.ETHEREUM_PASSWORD
-  }
+  rinkeby: {
+    mnemonic: process.env.RINKEBY_MNEMONIC,
+  },
+  tomochain: {
+    mnemonic: process.env.TOMOCHAIN_MNEMONIC,
+  },
+  tomochainTestnet: {
+    mnemonic: process.env.TOMOCHAIN_TESTNET_MNEMONIC,
+  },
 }
 
 module.exports = config
