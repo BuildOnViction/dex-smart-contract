@@ -1,5 +1,14 @@
 require('dotenv').config()
 
+const NETWORK_ID = {
+  ETHEREUM: '1',
+  ROPSTEN: '3',
+  RINKEBY: '4',
+  TOMOCHAIN: '88',
+  TOMOCHAIN_TESTNET: '89',
+  DEVELOPMENT: '8888',
+}
+
 const contractAddresses = require('./contractAddresses.json')
 
 // const quoteTokens = ['WETH', 'DAI', 'TUSD', 'USDC'];
@@ -27,12 +36,6 @@ const baseTokens = [
 const rewardAddresses = {
   '1': '',
   '8888': '0xD3050147F1AC4c552941930C7b27386dE8A710b8',
-}
-
-const keys = {
-  '1': (process.env.TOMO_MAINNET_KEYS || '').split(','),
-  '4': (process.env.TOMO_RINKEBY_KEYS || '').split(','),
-  '8888': [],
 }
 
 let tokenContracts = null
@@ -72,12 +75,12 @@ const getTokenContracts = (artifacts, filters) => {
 }
 
 module.exports = {
+  NETWORK_ID,
   quoteTokens,
   baseTokens,
   tokens: [...baseTokens, ...quoteTokens],
   rewardAddresses,
   contractAddresses,
-  keys,
   // truffle config
   rpcEndpoints: {
     ethereum: 'https://mainnet.infura.io/v3/ebaf1785cc1b4f319e0ff07f26cadae8',
