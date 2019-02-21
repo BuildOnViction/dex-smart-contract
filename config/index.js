@@ -9,10 +9,6 @@ const NETWORK_ID = {
   DEVELOPMENT: '8888',
 }
 
-const contractAddresses = require('./contractAddresses.json')
-
-// const quoteTokens = ['WETH', 'DAI', 'TUSD', 'USDC'];
-const quoteTokens = []
 const baseTokens = [
   'ETH',
   // 'AE',
@@ -32,6 +28,9 @@ const baseTokens = [
   // 'WTC',
   // 'ZRX',
 ]
+
+// const quoteTokens = ['WETH', 'DAI', 'TUSD', 'USDC'];
+const quoteTokens = []
 
 const rewardAddresses = {
   '1': '',
@@ -80,7 +79,6 @@ module.exports = {
   baseTokens,
   tokens: [...baseTokens, ...quoteTokens],
   rewardAddresses,
-  contractAddresses,
   // truffle config
   rpcEndpoints: {
     ethereum: 'https://mainnet.infura.io/v3/ebaf1785cc1b4f319e0ff07f26cadae8',

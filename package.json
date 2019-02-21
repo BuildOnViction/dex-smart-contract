@@ -12,7 +12,6 @@
     "dev": "webpack-dev-server",
     "test": "truffle migrate --reset && truffle test",
     "deploy-contracts": "truffle migrate --network development -f 1 --to 3",
-    "generate-exchange-go": "node scripts/generateExchangeGo.js ../dex-server/contracts/contractsinterfaces/exchange.go",
     "watch": "npm-watch"
   },
   "watch": {
