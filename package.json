@@ -12,7 +12,6 @@
     "dev": "webpack-dev-server",
     "test": "truffle migrate --reset && truffle test",
     "deploy-contracts": "truffle migrate --network development -f 1 --to 3",
-    "generate-exchange-go": "node scripts/generateExchangeGo.js ../dex-server/contracts/contractsinterfaces/exchange.go",
     "watch": "npm-watch"
   },
   "watch": {
@@ -55,7 +54,6 @@
     "webpack-dev-server": "^2.3.0"
   },
   "dependencies": {
-    "@digix/truffle-lightwallet-provider": "~0.1.4",
     "babel-plugin-transform-class-properties": "~6.24.1",
     "babel-preset-react": "~6.24.1",
     "babel-preset-stage-3": "~6.24.1",
@@ -64,6 +62,7 @@
     "chai-bignumber": "~2.0.2",
     "dotenv": "~5.0.1",
     "npm-watch": "~0.3.0",
+    "truffle-hdwallet-provider": "^1.0.4",
     "web3": "~1.0.0-beta.34",
     "web3-eth-accounts": "~1.0.0-beta.34"
   }

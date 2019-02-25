@@ -4,39 +4,15 @@
 https://golang.org/doc/install
 ```
 
-0.2. Install go-ethereum from source code
+0.2. Download go-ethereum source code
 ```
 https://geth.ethereum.org/install/#build-it-from-source-code
 ```
 ----------------
-## II. dex-protocol
-1. Clone it: 
-```
-git clone git@github.com:tomochain/dex-protocol.git
-```
-2. Install necessary golang packages:
-```
-yarn install-requirements
-```
-3. 
-```
-    cd OrderBook
-    mkdir $GOPATH/src/github.com/tomochain
-    ln -sF $PWD $GOPATH/src/github.com/tomochain/orderbook
-```
-4. Reset go-ethereum repository to a specific commit in order to work (temporary):
-```
-    cd $GOPATH/src/github.com/ethereum/go-ethereum
-    git reset --hard 880de230b44e20282abdef0f1f9a3294ce68e5d8
-```
-5. By default, we use POA consensus for demo  
-    Assume you are in `dex-protocol` folder:
-``` 
-    Run Node1: `yarn node1 -mining true`  
-    Run Node2: `yarn node2 -mining true`  
-    Run Backend: `yarn backend` (optional)
-```
-----------------
+## II. Blockchain
+
+You can use Ganache for development or the testnet of your own
+
 ## III. dex-smart-contract
 1. Clone it: 
 ```
@@ -46,14 +22,69 @@ git clone git@github.com:tomochain/dex-smart-contract.git
 ```
 yarn global add truffle
 ```
-3. Run `yarn`
-4. Deploy contracts to blockchain:
+3. Run `yarn install`
+
+4. Update .env file with your mnemonic words (You can check file `.env.sample` for more information)
+
+5. Deploy smart contracts to blockchain:
 ```
 yarn deploy-contracts
 ```
+This command will deploy smart contract to your local blockchain (--network development)
+
+OR
+
+```
+truffle migrate --network tomochainTestnet
+```
+This command will deploy smart contract to Tomochain Testnet
+
+OR
+
+```
+truffle migrate --network tomochain
+```
+This command will deploy smart contract to Tomochain Mainnet (but don't use for now)
 
 ----------------
-## IV. dex-client
+## IV. dex-server
+1. Clone it:
+```
+git clone git@github.com:tomochain/dex-server.git
+```
+2.  Checkout `develop` branch
+3. Install necessary golang packages:
+```
+yarn install-requirements
+```
+4. Run docker environment
+```
+yarn start-env
+```
+OR 
+```
+yarn reset-env
+```
+in case you want to reset MongoDB, Redis, RabbitMQ data
+
+5. Update file `seed-data.sh`
+```
+Update line 2. NETWORK="development" with your network of choice
+
+It can be "development", "tomochainTestnet" or "tomochain"
+```
+
+6. Generate seed and import seed data into mongo
+```
+yarn seeds
+```
+7. Start the server
+```
+yarn start
+```
+
+----------------
+## V. dex-client
 1. Clone it:
 ```
 git clone git@github.com:tomochain/dex-client.git
@@ -77,57 +108,4 @@ yarn start
 This command will also compile sass files
 
 ----------------
-## V. dex-server
-1. Clone it:
-```
-git clone git@github.com:tomochain/dex-server.git
-```
-2.  Checkout `develop` branch
-3. Install necessary golang packages:
-```
-yarn install-requirements
-```
-4. Go to `dex-server` directory, run this command:
-```
-ln -sF $PWD $GOPATH/src/github.com/tomochain/backend-matching-engine
-```
-5. Run docker environment
-```
-yarn start-env
-```
-OR 
-```
-yarn reset-env
-```
-in case you want to reset MongoDB, Redis, RabbitMQ data
-6. Generate seed and import seed data into mongo
-```
-yarn seeds
-```
-7. Start the server
-```
-yarn start
-```
-
-----------------
-# DONE
-
-## Reset in case something went wrong
-1. Manually delete 2 folders `.data_30100` and `.data_30101` inside folder `dex-protocol` (these 2 folders are hidden)
-```
-cd dex-protocol
-rm -rf .data_*
-```
-2. Do everything from point II. dex-protocol except some commands such as:
-```
-git clone ...
-```
-```
-ln -sF ...
-```
-```
-git reset ...
-```
-```
-yarn install-requirements
-```
+## DONE
