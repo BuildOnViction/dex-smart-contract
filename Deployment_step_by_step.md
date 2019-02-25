@@ -66,11 +66,19 @@ OR
 yarn reset-env
 ```
 in case you want to reset MongoDB, Redis, RabbitMQ data
-5. Generate seed and import seed data into mongo
+
+5. Update file `seed-data.sh`
+```
+Update line 2. NETWORK="development" with your network of choice
+
+It can be "development", "tomochainTestnet" or "tomochain"
+```
+
+6. Generate seed and import seed data into mongo
 ```
 yarn seeds
 ```
-6. Start the server
+7. Start the server
 ```
 yarn start
 ```
