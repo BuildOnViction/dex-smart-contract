@@ -1,84 +1,47 @@
 require('dotenv').config()
 
-const contractAddresses = require('./contractAddresses.json')
+const NETWORK_ID = {
+  ETHEREUM: '1',
+  ROPSTEN: '3',
+  RINKEBY: '4',
+  TOMOCHAIN: '88',
+  TOMOCHAIN_TESTNET: '89',
+  DEVELOPMENT: '8888',
+}
 
-// const quoteTokens = ['WETH', 'DAI', 'TUSD', 'USDC'];
-const quoteTokens = ['WETH', 'DAI']
 const baseTokens = [
-  'AE',
-  'BAT',
-    // 'BNB',
-    // 'GNT',
-    // 'KNC',
-    // 'LOOM',
-    // 'LRC',
-    // 'MITH',
-    // 'MKR',
-    // 'NPXS',
-    // 'OMG',
-    // 'PRFT',
-    // 'REP',
-    // 'SNT',
-    // 'WTC',
-  'ZRX',
+  'ETH',
+  // 'AE',
+  // 'BAT',
+  // 'BNB',
+  // 'GNT',
+  // 'KNC',
+  // 'LOOM',
+  // 'LRC',
+  // 'MITH',
+  // 'MKR',
+  // 'NPXS',
+  // 'OMG',
+  // 'PRFT',
+  // 'REP',
+  // 'SNT',
+  // 'WTC',
+  // 'ZRX',
 ]
 
-const decimals = {
-  AE: 18,
-  BAT: 18,
-  BNB: 18,
-  DAI: 18,
-  GNT: 18,
-  KNC: 18,
-  LOOM: 18,
-  LRC: 18,
-  MITH: 18,
-  MKR: 18,
-  NPXS: 18,
-  OMG: 18,
-  PRFT: 18,
-  REP: 18,
-  SNT: 18,
-  WETH: 18,
-  WTC: 18,
-  ZRX: 18,
-  TUSD: 18,
-  USDC: 6,
-}
-
-const operatorAddresses = {
-  '1': [],
-  '8888': ['0xF9D87abd60435b70415CcC1FAAcA4F8B91786eDb', '0xD3050147F1AC4c552941930C7b27386dE8A710b8'],
-}
+// const quoteTokens = ['WETH', 'DAI', 'TUSD', 'USDC'];
+const quoteTokens = []
 
 const rewardAddresses = {
   '1': '',
   '8888': '0xD3050147F1AC4c552941930C7b27386dE8A710b8',
 }
 
-const testAccounts = [
-  '0xcc5697310277bcc3be506f53ed8aafc9d17a2c18',
-  '0x3b89e78363d872c80c78c254bf1bb9ff9e586571',
-  '0xf2934427c36ba897f9be6ed554ed2dbce3da1c68',
-  '0xfa4f991caa4f37f7bce2e285e155da8c929658ef',
-  '0xb21a999ba39015df00ee33e55caf08af86b46bfa',
-  '0xdc64ae432d848cf38a89c6f30a04884e22e83c74',
-  '0xbf8e9e3f9dbb85554679ce8147077b0496358f53',
-  '0xc8b74b6b883a96e3defd62934ec3a1e44f149860',
-  '0x53ee745b3d30d692dc016450fef68a898c16fa44',
-  '0xe0a1240b358dfa6c167edea09c763ae9f3b51ea0',
-]
-
-const keys = {
-  '1': (process.env.TOMO_MAINNET_KEYS || '').split(','),
-  '4': (process.env.TOMO_RINKEBY_KEYS || '').split(','),
-  '8888': [],
-}
-
 let tokenContracts = null
 const getTokenContracts = (artifacts, filters) => {
   if (tokenContracts === null) {
     tokenContracts = [
+      artifacts.require('../contracts/tokens/ETH.sol'),
       artifacts.require('../contracts/tokens/OMG.sol'),
       artifacts.require('../contracts/tokens/BNB.sol'),
       artifacts.require('../contracts/tokens/ZRX.sol'),
@@ -101,58 +64,64 @@ const getTokenContracts = (artifacts, filters) => {
       artifacts.require('../contracts/tokens/FUN.sol'),
       artifacts.require('../contracts/tokens/KNC.sol'),
       artifacts.require('../contracts/tokens/LOOM.sol'),
-      artifacts.require('../contracts/tokens/PRFT.sol'),
       artifacts.require('../contracts/tokens/DAI.sol'),
-      artifacts.require('../contracts/utils/WETH.sol'),
     ]
   }
   if (!filters) return tokenContracts
   return tokenContracts.filter(tokenContract =>
-        filters.includes(tokenContract.contractName),
-    )
+    filters.includes(tokenContract.contractName),
+  )
 }
 
 module.exports = {
+  NETWORK_ID,
   quoteTokens,
   baseTokens,
   tokens: [...baseTokens, ...quoteTokens],
-  decimals,
-  operatorAddresses,
   rewardAddresses,
-  testAccounts,
-  contractAddresses,
-  keys,
-    // truffle config
-  infura: {
-    ethereum: 'https://mainnet.infura.io/Oi27hEUIuGqMsrYGpI7e',
-    ropsten: 'https://ropsten.infura.io/Oi27hEUIuGqMsrYGpI7e',
-    rinkeby: 'https://rinkeby.infura.io/Oi27hEUIuGqMsrYGpI7e',
-    kovan: 'https://kovan.infura.io/Oi27hEUIuGqMsrYGpI7e',
+  // truffle config
+  rpcEndpoints: {
+    ethereum: 'https://mainnet.infura.io/v3/ebaf1785cc1b4f319e0ff07f26cadae8',
+    ropsten: 'https://ropsten.infura.io/v3/ebaf1785cc1b4f319e0ff07f26cadae8',
+    kovan: 'https://ropsten.infura.io/v3/ebaf1785cc1b4f319e0ff07f26cadae8',
+    rinkeby: 'https://rinkeby.infura.io/v3/ebaf1785cc1b4f319e0ff07f26cadae8',
+    tomochain: 'https://rpc.tomochain.com',
+    tomochainTestnet: 'https://testnet.tomochain.com',
   },
   constants: {
-    DEFAULT_GAS: 4.5 * 10 ** 6,
-    MAX_GAS: 6.0 * 10 ** 6,
-    DEFAULT_LOW_GAS_PRICE: 0.1 * 10 ** 9,
-    DEFAULT_GAS_PRICE: 15 * 10 ** 9,
-    DEFAULT_HIGH_GAS_PRICE: 9 * 10 ** 9,
-    TOKENS_ALLOCATED_TO_PROOF: 1181031 * 10 ** 18,
-    DECIMALS_POINTS: 10 ** 18,
-    TOKEN_UNITS: 10 ** 18,
-    ETHER: 10 ** 18,
-  },
-  ipfs: {
-    PRODUCTION: 'QmUM5eT3vY9NfeJ9JBg8xcrom3jEZ3J86wRtNPsFBJ6QFo',
-    TESTING_SUCCESS: 'QmVuyH2JtbTguZuC5HsefNBbu8SNSUdq6mrHHDhGeLob3V',
-    TESTING_FAIL: 'QmUGo9mjcdc232p4YUgGf5mdZ5aAvVrVpp8AXiN4AuvBZd',
+    development: {
+      DEFAULT_GAS: 4.5 * 10 ** 6,
+      MAX_GAS: 6.0 * 10 ** 6,
+      DEFAULT_LOW_GAS_PRICE: 0.1 * 10 ** 9,
+      DEFAULT_GAS_PRICE: 15 * 10 ** 9,
+      DEFAULT_HIGH_GAS_PRICE: 9 * 10 ** 9,
+    },
+    tomochain: {
+      DEFAULT_GAS: 4.5 * 10 ** 6,
+      MAX_GAS: 20 * 10 ** 6,
+      DEFAULT_LOW_GAS_PRICE: 0.1 * 10 ** 9,
+      DEFAULT_GAS_PRICE: 10 ** 14,
+      DEFAULT_HIGH_GAS_PRICE: 9 * 10 ** 9,
+    },
+    tomochainTestnet: {
+      DEFAULT_GAS: 4.5 * 10 ** 6,
+      MAX_GAS: 20 * 10 ** 6,
+      DEFAULT_LOW_GAS_PRICE: 0.1 * 10 ** 9,
+      DEFAULT_GAS_PRICE: 10 ** 14,
+      DEFAULT_HIGH_GAS_PRICE: 9 * 10 ** 9,
+    },
   },
   accounts: {
+    marketMaker: [
+      '0x7d8d88fA6726c8853d3f382e4915f43f4D549d0e',
+    ],
     development: [
       '0xF069080F7acB9a6705b4a51F84d9aDc67b921bDF',
       '0x657B4CbA193CCac878a3561F36329Facd6D19825',
     ],
-    rinkeby: [],
-    ropsten: [],
     ethereum: [],
+    ropsten: [],
+    rinkeby: [],
   },
   getTokenContracts,
 }

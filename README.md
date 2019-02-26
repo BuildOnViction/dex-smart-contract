@@ -7,9 +7,6 @@ If you have already put smart contracts in genesis block, just change the code f
 `truffle migrate -f 3 --to 3 --network development`  
 Otherwise just run `truffle deploy --network development`  
 
-## Update code for server
-`truffle compile && node scripts/generateExchangeGo.js ../dex-server/contracts/contractsinterfaces/exchange.go`
-
 ## Architecture
 
 The smart contract samples used to deploy in creation block. The tokens contracts for selling and buying, and the Exchange contract used to allows two users to interact with. There is no matching engine logic inside the exchange contract, it is supposed to have trade logic only.

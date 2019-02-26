@@ -1,3 +1,0 @@
-node query_tokens.js
-node set_rinkeby_operators.js
-node register_rinkeby_pairs.js
