@@ -1,36 +1,10 @@
 require('dotenv').config()
 
 const NETWORK_ID = {
-  ETHEREUM: '1',
-  ROPSTEN: '3',
-  RINKEBY: '4',
   TOMOCHAIN: '88',
   TOMOCHAIN_TESTNET: '89',
   DEVELOPMENT: '8888',
 }
-
-const baseTokens = [
-  'ETH',
-  // 'AE',
-  // 'BAT',
-  // 'BNB',
-  // 'GNT',
-  // 'KNC',
-  // 'LOOM',
-  // 'LRC',
-  // 'MITH',
-  // 'MKR',
-  // 'NPXS',
-  // 'OMG',
-  // 'PRFT',
-  // 'REP',
-  // 'SNT',
-  // 'WTC',
-  // 'ZRX',
-]
-
-// const quoteTokens = ['WETH', 'DAI', 'TUSD', 'USDC'];
-const quoteTokens = []
 
 const rewardAddresses = {
   '1': '',
@@ -41,30 +15,32 @@ let tokenContracts = null
 const getTokenContracts = (artifacts, filters) => {
   if (tokenContracts === null) {
     tokenContracts = [
+      artifacts.require('../contracts/tokens/BTC.sol'),
       artifacts.require('../contracts/tokens/ETH.sol'),
-      artifacts.require('../contracts/tokens/OMG.sol'),
-      artifacts.require('../contracts/tokens/BNB.sol'),
-      artifacts.require('../contracts/tokens/ZRX.sol'),
-      artifacts.require('../contracts/tokens/AE.sol'),
-      artifacts.require('../contracts/tokens/TRX.sol'),
-      artifacts.require('../contracts/tokens/MKR.sol'),
-      artifacts.require('../contracts/tokens/BAT.sol'),
-      artifacts.require('../contracts/tokens/REP.sol'),
-      artifacts.require('../contracts/tokens/BTM.sol'),
-      artifacts.require('../contracts/tokens/NPXS.sol'),
-      artifacts.require('../contracts/tokens/WTC.sol'),
-      artifacts.require('../contracts/tokens/KCS.sol'),
-      artifacts.require('../contracts/tokens/GNT.sol'),
-      artifacts.require('../contracts/tokens/PPT.sol'),
-      artifacts.require('../contracts/tokens/SNT.sol'),
-      artifacts.require('../contracts/tokens/DGX.sol'),
-      artifacts.require('../contracts/tokens/MITH.sol'),
-      artifacts.require('../contracts/tokens/AION.sol'),
-      artifacts.require('../contracts/tokens/LRC.sol'),
-      artifacts.require('../contracts/tokens/FUN.sol'),
-      artifacts.require('../contracts/tokens/KNC.sol'),
-      artifacts.require('../contracts/tokens/LOOM.sol'),
-      artifacts.require('../contracts/tokens/DAI.sol'),
+      artifacts.require('../contracts/tokens/USDT.sol'),
+      // artifacts.require('../contracts/tokens/OMG.sol'),
+      // artifacts.require('../contracts/tokens/BNB.sol'),
+      // artifacts.require('../contracts/tokens/ZRX.sol'),
+      // artifacts.require('../contracts/tokens/AE.sol'),
+      // artifacts.require('../contracts/tokens/TRX.sol'),
+      // artifacts.require('../contracts/tokens/MKR.sol'),
+      // artifacts.require('../contracts/tokens/BAT.sol'),
+      // artifacts.require('../contracts/tokens/REP.sol'),
+      // artifacts.require('../contracts/tokens/BTM.sol'),
+      // artifacts.require('../contracts/tokens/NPXS.sol'),
+      // artifacts.require('../contracts/tokens/WTC.sol'),
+      // artifacts.require('../contracts/tokens/KCS.sol'),
+      // artifacts.require('../contracts/tokens/GNT.sol'),
+      // artifacts.require('../contracts/tokens/PPT.sol'),
+      // artifacts.require('../contracts/tokens/SNT.sol'),
+      // artifacts.require('../contracts/tokens/DGX.sol'),
+      // artifacts.require('../contracts/tokens/MITH.sol'),
+      // artifacts.require('../contracts/tokens/AION.sol'),
+      // artifacts.require('../contracts/tokens/LRC.sol'),
+      // artifacts.require('../contracts/tokens/FUN.sol'),
+      // artifacts.require('../contracts/tokens/KNC.sol'),
+      // artifacts.require('../contracts/tokens/LOOM.sol'),
+      // artifacts.require('../contracts/tokens/DAI.sol'),
     ]
   }
   if (!filters) return tokenContracts
@@ -75,16 +51,14 @@ const getTokenContracts = (artifacts, filters) => {
 
 module.exports = {
   NETWORK_ID,
-  quoteTokens,
-  baseTokens,
-  tokens: [...baseTokens, ...quoteTokens],
+  tokens: [
+    'BTC',
+    'ETH',
+    'USDT',
+  ],
   rewardAddresses,
   // truffle config
   rpcEndpoints: {
-    ethereum: 'https://mainnet.infura.io/v3/ebaf1785cc1b4f319e0ff07f26cadae8',
-    ropsten: 'https://ropsten.infura.io/v3/ebaf1785cc1b4f319e0ff07f26cadae8',
-    kovan: 'https://ropsten.infura.io/v3/ebaf1785cc1b4f319e0ff07f26cadae8',
-    rinkeby: 'https://rinkeby.infura.io/v3/ebaf1785cc1b4f319e0ff07f26cadae8',
     tomochain: 'https://rpc.tomochain.com',
     tomochainTestnet: 'https://testnet.tomochain.com',
   },
