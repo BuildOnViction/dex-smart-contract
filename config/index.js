@@ -29,9 +29,9 @@ const getTokenContracts = (artifacts, filters) => {
 module.exports = {
   NETWORK_ID,
   tokens: [
-    'BTC',
+    // 'BTC',
     'ETH',
-    'USDT',
+    // 'USDT',
   ],
   rewardAddresses,
   // truffle config
