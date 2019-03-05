@@ -21,24 +21,6 @@ module.exports = {
       gasPrice: config.constants.development.DEFAULT_GAS_PRICE,
       from: '0xF9D87abd60435b70415CcC1FAAcA4F8B91786eDb', // testprc main account here
     },
-    ethereum: {
-      provider: () => new HDWalletProvider(secret.ethereum.mnemonic, config.rpcEndpoints.ethereum),
-      network_id: config.NETWORK_ID.ETHEREUM,
-      gas: config.constants.development.MAX_GAS,
-      gasPrice: config.constants.development.DEFAULT_GAS_PRICE,
-    },
-    ropsten: {
-      provider: () => new HDWalletProvider(secret.ropsten.mnemonic, config.rpcEndpoints.ropsten),
-      network_id: config.NETWORK_ID.ROPSTEN,
-      gas: config.constants.development.MAX_GAS,
-      gasPrice: config.constants.development.DEFAULT_GAS_PRICE,
-    },
-    rinkeby: {
-      provider: () => new HDWalletProvider(secret.rinkeby.mnemonic, config.rpcEndpoints.rinkeby),
-      network_id: config.NETWORK_ID.RINKEBY,
-      gas: config.constants.development.MAX_GAS,
-      gasPrice: config.constants.development.DEFAULT_GAS_PRICE,
-    },
     tomochain: {
       provider: () => new HDWalletProvider(secret.tomochain.mnemonic, config.rpcEndpoints.tomochain),
       network_id: config.NETWORK_ID.TOMOCHAIN,
