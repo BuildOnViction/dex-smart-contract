@@ -36,13 +36,10 @@ const mineTx = (promiseOrTx, interval) => {
 
 module.exports = function (deployer, network, accounts) {
   deployer.then(async () => {
-    let addresses
-    // if (network === 'development') return
     const admin = accounts[0]
 
-    if (network === 'rinkeby') {
-      addresses = config.accounts.rinkeby
-    } else {
+    let addresses = []
+    if (network === 'development') {
       addresses = config.accounts.development
     }
     console.log(addresses)
