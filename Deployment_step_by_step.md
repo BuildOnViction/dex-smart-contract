@@ -47,17 +47,14 @@ truffle migrate --network tomochain
 This command will deploy smart contract to Tomochain Mainnet (but don't use for now)
 
 ----------------
-## IV. dex-server
+
+## IV. dex-deploy
 1. Clone it:
 ```
-git clone git@github.com:tomochain/dex-server.git
+git clone git@github.com:tomochain/dex-deploy.git
 ```
-2.  Checkout `develop` branch
-3. Install necessary golang packages:
-```
-yarn install-requirements
-```
-4. Run docker environment
+
+2. Run docker environment
 ```
 yarn start-env
 ```
@@ -67,24 +64,43 @@ yarn reset-env
 ```
 in case you want to reset MongoDB, Redis, RabbitMQ data
 
-5. Update file `seed-data.sh`
+3. Update file `seed-data.sh`
 ```
 Update line 2. NETWORK="development" with your network of choice
 
 It can be "development", "tomochainTestnet" or "tomochain"
 ```
 
-6. Generate seed and import seed data into mongo
+4. Generate seed and import seed data into mongo
 ```
 yarn seeds
 ```
-7. Start the server
+----------------
+## V. dex-server
+1. Clone it:
+```
+git clone git@github.com:tomochain/dex-server.git
+```
+2.  Checkout `develop` branch
+
+3. Update file `seed-data.sh`
+```
+Update line 2. NETWORK="development" with your network of choice
+
+It can be "development", "tomochainTestnet" or "tomochain"
+```
+
+4. Update config.yaml
+```
+yarn seeds
+```
+5. Start the server
 ```
 yarn start
 ```
 
 ----------------
-## V. dex-client
+## VI. dex-client
 1. Clone it:
 ```
 git clone git@github.com:tomochain/dex-client.git
