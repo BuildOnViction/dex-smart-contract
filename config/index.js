@@ -18,6 +18,7 @@ const getTokenContracts = (artifacts, filters) => {
       artifacts.require('../contracts/tokens/BTC.sol'),
       artifacts.require('../contracts/tokens/ETH.sol'),
       artifacts.require('../contracts/tokens/USDT.sol'),
+      artifacts.require('../contracts/tokens/TOMOS.sol'),
     ]
   }
   if (!filters) return tokenContracts
@@ -32,6 +33,7 @@ module.exports = {
     'BTC',
     'ETH',
     'USDT',
+    'TOMOS',
   ],
   rewardAddresses,
   // truffle config
