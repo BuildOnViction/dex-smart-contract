@@ -172,4 +172,16 @@ contract TOMOS is Owned {
     emit MintFinished();
     return true;
   }
+
+  /**
+     * @dev Burns a specific amount of tokens.
+     * @param value The amount of token to be burned.
+     */
+  function burn(uint256 value) public {
+    require(msg.sender != address(0));
+
+    totalSupply_ = totalSupply_.sub(value);
+    balances[msg.sender] = balances[msg.sender].sub(value);
+    emit Transfer(msg.sender, address(0), value);
+  }
 }
