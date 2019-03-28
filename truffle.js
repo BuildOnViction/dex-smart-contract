@@ -9,28 +9,30 @@ const secret = require('./config/secret')
 require('babel-register')
 require('babel-polyfill')
 
+const net = require('net')
+const Web3 = require('web3')
+
 const HDWalletProvider = require('truffle-hdwallet-provider')
 
 module.exports = {
   networks: {
     development: {
-      host: 'localhost',
-      port: 8545,
+      provider: () =>
+        new Web3.providers.IpcProvider('/home/piavgh/go/src/github.com/ethereum/chain/data-1/tomo.ipc', net),
       network_id: config.NETWORK_ID.DEVELOPMENT,
-      gas: config.constants.development.MAX_GAS,
+      gas: config.constants.development.DEFAULT_GAS,
       gasPrice: config.constants.development.DEFAULT_GAS_PRICE,
-      from: '0xF9D87abd60435b70415CcC1FAAcA4F8B91786eDb', // testprc main account here
     },
     tomochain: {
       provider: () => new HDWalletProvider(secret.tomochain.mnemonic, config.rpcEndpoints.tomochain),
       network_id: config.NETWORK_ID.TOMOCHAIN,
-      gas: config.constants.tomochain.MAX_GAS,
+      gas: config.constants.tomochain.DEFAULT_GAS,
       gasPrice: config.constants.tomochain.DEFAULT_GAS_PRICE,
     },
     tomochainTestnet: {
       provider: () => new HDWalletProvider(secret.tomochainTestnet.mnemonic, config.rpcEndpoints.tomochainTestnet),
       network_id: config.NETWORK_ID.TOMOCHAIN_TESTNET,
-      gas: config.constants.tomochainTestnet.MAX_GAS,
+      gas: config.constants.tomochainTestnet.DEFAULT_GAS,
       gasPrice: config.constants.tomochainTestnet.DEFAULT_GAS_PRICE,
     },
   },
