@@ -18,7 +18,7 @@ module.exports = {
   networks: {
     development: {
       provider: () =>
-        new Web3.providers.IpcProvider('/home/piavgh/go/src/github.com/ethereum/chain/data-1/tomo.ipc', net),
+        new Web3.providers.IpcProvider(process.env.NETWORK_DEVELOPMENT_IPC_PATH, net),
       network_id: config.NETWORK_ID.DEVELOPMENT,
       gas: config.constants.development.DEFAULT_GAS,
       gasPrice: config.constants.development.DEFAULT_GAS_PRICE,
